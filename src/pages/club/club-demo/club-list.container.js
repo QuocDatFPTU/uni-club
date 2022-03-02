@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { defaultPage } from "../../../util/constant";
-import { getListClub } from "./club.service";
-import { Button, Card, Col, Form, Input, Layout, PageHeader, Row } from "antd";
 import { EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Form, Input, Layout, PageHeader, Row } from "antd";
 import { pickBy } from "lodash";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
+import {
+  defaultPage,
+  formatDate,
+  formatDateTime,
+  formatDateTimeFull,
+} from "../../../util/constant";
 import ClubEditForm from "./club-list.edit";
+import { getListClub } from "./club.service";
 
 const defaultSort = {
   "is-ascending": "true",
   "order-by": "Id",
 };
 const ClubList = () => {
+  const navigate = useNavigate();
   const [clubList, setClubList] = useState([]);
   const [club, setClub] = useState();
 
@@ -28,11 +36,10 @@ const ClubList = () => {
     getListClub({ "uni-id": 1, ...params, ...sortedInfo })
       .then((result) => {
         setClubList([...result.data.items]);
-        setTotalItem(result["total-count"]);
+        setTotalItem(result.data["total-count"]);
         setLoading(false);
       })
       .catch((e) => setLoading(false));
-    console.log(clubList);
   };
 
   useEffect(() => {
@@ -44,7 +51,19 @@ const ClubList = () => {
       title: "Club name",
       dataIndex: "club-name",
       key: "club-name",
-      width: "12%",
+      width: "20%",
+      ellipsis: true,
+      render: (text, record) => {
+        return (
+          <Button
+            size="small"
+            type="link"
+            onClick={() => navigate(`${record.id}`)}
+          >
+            {text}
+          </Button>
+        );
+      },
     },
     {
       title: "Short name",
@@ -56,7 +75,7 @@ const ClubList = () => {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      width: "12%",
+      width: "20%",
     },
     {
       title: "Short description",
@@ -65,17 +84,33 @@ const ClubList = () => {
       width: "12%",
     },
     {
+      title: "Slogan",
+      dataIndex: "slogan",
+      key: "slogan",
+      width: "12%",
+      render: (value) => {
+        if (value === null) {
+          return "Empty";
+        } else {
+          return value;
+        }
+      },
+    },
+    {
       title: "Established Date",
       dataIndex: "established-date",
       key: "established-date",
       width: "12%",
+      render: (value) => {
+        return moment(value, formatDateTimeFull).format(formatDate);
+      },
     },
     {
       title: "Action",
       align: "center",
       width: "8%",
       fixed: "right",
-      render: (record) => (
+      render: (text, record) => (
         <div style={{ display: "flex", justifyContent: "space-around" }}>
           <Button
             type="link"
@@ -192,7 +227,7 @@ const ClubList = () => {
             total: totalItem,
             showSizeChanger: true,
             pageSize: params["page-size"],
-            current: params["page-numeber"],
+            current: params["page-number"],
           }}
           scroll={{ x: 1200 }}
         />
