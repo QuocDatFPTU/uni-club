@@ -20,7 +20,8 @@ export async function createEvent(payload) {
 export async function updateEvent(payload, id) {
 	const url = `/events/${id}`;
 	const newEvent = {
-		...payload
+		...payload,
+		id: id
 	};
 	return axiosClient.put(url, newEvent);
 }
