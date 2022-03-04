@@ -10,6 +10,9 @@ import HomeLayout from "./layouts/home";
 import Welcome from "./pages/dashboard/welcome";
 import Login from "./pages/home/login";
 import { store } from "./redux/store";
+import EventList from "./pages/club/event/event-list.container";
+import EventCreate from "./pages/club/event/event-list.create";
+import EventEdit from "./pages/club/event/event-list.edit";
 
 const AppWrapper = () => {
 	return (
@@ -29,13 +32,26 @@ const App = () => {
 				</Route>
 				<Route
 					path="dashboard"
-					element={<DashboardLayout sider={<DashboardSider />} />}
+					element={
+						<DashboardLayout
+							sider={<DashboardSider />}
+							title="FPT University"
+						/>
+					}
 				>
 					<Route path="" element={<Welcome />} />
 					<Route path="clubs" element={<ClubList />} />
 				</Route>
-				<Route path="club" element={<DashboardLayout sider={<ClubSider />} />}>
+				<Route
+					path="club"
+					element={
+						<DashboardLayout sider={<ClubSider />} title="FPT ABC CLUB" />
+					}
+				>
 					<Route path="" element={<Welcome />} />
+					<Route path="event" element={<EventList />} />
+					<Route path="create-event" element={<EventCreate />} />
+					<Route path="edit-event/:id" element={<EventEdit />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>

@@ -41,6 +41,7 @@ const DashboardLayout = (props) => {
 				<Header className="header">
 					{
 						<div className="header-container">
+							<p style={{ color: "white" }}>{props.title}</p>
 							<div className="profile-container">
 								<Dropdown overlay={menu}>
 									<div className="profile">
