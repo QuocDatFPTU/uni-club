@@ -17,8 +17,9 @@ import { Content } from "antd/lib/layout/layout";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { success } from "../../../components/CustomSuccessModal";
 import { formatDate, formatDateTimeFull } from "../../../util/constant";
-import { getEventByID } from "./event.service";
+import { getEventByID, updateEvent } from "./event.service";
 const EventEdit = () => {
 	const [event, setEvent] = useState(null);
 	const { id } = useParams();
@@ -32,12 +33,16 @@ const EventEdit = () => {
 		fetchEvent(id);
 	}, []);
 
-	const onFinish = (values) => {
+	const onFinish = async (values) => {
 		values["end-date"] =
 			moment(values["end-date"], formatDate).format(formatDateTimeFull) + "Z";
 		values["start-date"] =
 			moment(values["start-date"], formatDate).format(formatDateTimeFull) + "Z";
-		console.log(JSON.stringify(values));
+		let res = await updateEvent(values, id);
+		console.log(res);
+		if (res != null) {
+			success("Edit success");
+		}
 	};
 
 	return event == null ? (
@@ -173,7 +178,7 @@ const EventEdit = () => {
 								</Form.Item>
 								<Form.Item name="is-private">
 									<Button type="primary" htmlType="submit">
-										Create
+										Edit
 									</Button>
 								</Form.Item>
 							</Col>

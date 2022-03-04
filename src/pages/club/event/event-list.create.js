@@ -9,20 +9,36 @@ import {
 	Switch,
 	Layout,
 	Button,
-	InputNumber
+	InputNumber,
+	Modal
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Content } from "antd/lib/layout/layout";
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
 import { formatDate, formatDateTimeFull } from "../../../util/constant";
+import { createEvent } from "./event.service";
+
+const success = () => {
+	Modal.success({
+		content: "Create success",
+		onOk() {
+			window.history.back();
+		}
+	});
+};
+
 const EventCreate = () => {
-	const onFinish = (values) => {
+	const onFinish = async (values) => {
 		values["end-date"] =
 			moment(values["end-date"], formatDate).format(formatDateTimeFull) + "Z";
 		values["start-date"] =
 			moment(values["start-date"], formatDate).format(formatDateTimeFull) + "Z";
-		console.log(JSON.stringify(values));
+		let res = await createEvent(values);
+		console.log(res);
+		if (res != null) {
+			success();
+		}
 	};
 	return (
 		<Layout className="layoutContent">
@@ -157,6 +173,9 @@ const EventCreate = () => {
 					</Form>
 				</div>
 			</Content>
+			{/* <Modal title="Basic Modal" visible={isCreated} onBack>
+				<p>Create success</p>
+			</Modal> */}
 		</Layout>
 	);
 };

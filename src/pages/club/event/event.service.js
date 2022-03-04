@@ -10,9 +10,17 @@ export async function getEventByID(id) {
 }
 
 export async function createEvent(payload) {
-	const url = `/event`;
+	const url = `/events`;
 	const newEvent = {
 		...payload
 	};
 	return axiosClient.post(url, newEvent);
+}
+
+export async function updateEvent(payload, id) {
+	const url = `/events/${id}`;
+	const newEvent = {
+		...payload
+	};
+	return axiosClient.put(url, newEvent);
 }
