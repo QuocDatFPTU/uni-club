@@ -13,7 +13,8 @@ import { store } from "./redux/store";
 import EventList from "./pages/club/event/event-list.container";
 import EventCreate from "./pages/club/event/event-list.create";
 import EventEdit from "./pages/club/event/event-list.edit";
-
+import DepaList from "./pages/dashboard/department/department-list-container";
+import StudentList from "./pages/dashboard/student/student-list.container";
 const AppWrapper = () => {
 	return (
 		<Provider store={store}>
@@ -41,6 +42,8 @@ const App = () => {
 				>
 					<Route path="" element={<Welcome />} />
 					<Route path="clubs" element={<ClubList />} />
+					<Route path="departments" element={<DepaList />} />
+					<Route path="students" element={<StudentList />} />
 				</Route>
 				<Route
 					path="club"
