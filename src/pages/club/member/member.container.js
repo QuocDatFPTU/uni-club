@@ -12,7 +12,7 @@ const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const EventList = () => {
+const MemberList = () => {
 	const navigate = useNavigate();
 	const [eventList, setEventList] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -96,7 +96,7 @@ const EventList = () => {
 		},
 		{
 			path: "first",
-			breadcrumbName: "Department"
+			breadcrumbName: "Member"
 		}
 	];
 
@@ -104,7 +104,7 @@ const EventList = () => {
 		<Layout className="layoutContent">
 			<PageHeader
 				ghost={false}
-				title="Department"
+				title="Member"
 				extra={extraButton}
 				breadcrumb={routes}
 				className="customPageHeader"
@@ -184,4 +184,4 @@ const EventList = () => {
 	);
 };
 
-export default EventList;
+export default MemberList;

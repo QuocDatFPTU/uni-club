@@ -7,15 +7,18 @@ import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
 import { defaultPage } from "../../../util/constant";
 import { getDepaList } from "./department.service";
-
+import DepaEdit from "./department.edit";
 const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const EventList = () => {
+const DepaList = () => {
 	const navigate = useNavigate();
-	const [eventList, setEventList] = useState([]);
+	const [depaList, setDepaList] = useState([]);
+	const [department, setDepartment] = useState();
+
 	const [loading, setLoading] = useState(false);
+	const [isEditModal, setIsEditModal] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
 	const [totalItem, setTotalItem] = useState();
@@ -26,7 +29,7 @@ const EventList = () => {
 		setLoading(true);
 		getDepaList({ "uni-id": 1, ...params, ...sortedInfo })
 			.then((result) => {
-				setEventList([...result.data.items]);
+				setDepaList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
 				setLoading(false);
 			})
@@ -57,7 +60,18 @@ const EventList = () => {
 			fixed: "right",
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
-					<Button type="link" size="small" icon={<EditOutlined />} />
+					<Button
+						onClick={() => {
+							const departmentDetail = depaList.find(
+								(depa) => depa.id === record.id
+							);
+							setDepartment(departmentDetail);
+							setIsEditModal(true);
+						}}
+						type="link"
+						size="small"
+						icon={<EditOutlined />}
+					/>
 				</div>
 			)
 		}
@@ -68,7 +82,8 @@ const EventList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				navigate("/club/create-event");
+				setDepartment();
+				setIsEditModal(true);
 			}}
 		>
 			{"Create"}
@@ -147,7 +162,7 @@ const EventList = () => {
 					loading={loading}
 					bordered
 					columns={columns}
-					dataSource={eventList}
+					dataSource={depaList}
 					onChange={(pagination, filters, sorter) => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 						if (pagination.pageSize !== params["page-size"]) {
@@ -166,9 +181,18 @@ const EventList = () => {
 					}}
 					scroll={{ x: 1200 }}
 				/>
+				<DepaEdit
+					item={department}
+					onCallback={(value) => {
+						setParams({ ...defaultPage });
+						setIsEditModal(false);
+					}}
+					isEditModal={isEditModal}
+					setIsEditModal={setIsEditModal}
+				/>
 			</Layout.Content>
 		</Layout>
 	);
 };
 
-export default EventList;
+export default DepaList;

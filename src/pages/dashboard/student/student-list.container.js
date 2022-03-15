@@ -6,16 +6,20 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
 import { defaultPage } from "../../../util/constant";
+import StudentEdit from "./student.edit";
 import { getStudentList } from "./student.service";
 
 const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const EventList = () => {
+const StudentList = () => {
 	const navigate = useNavigate();
-	const [eventList, setEventList] = useState([]);
+	const [studentList, setStudentList] = useState([]);
+	const [student, setStudent] = useState();
+
 	const [loading, setLoading] = useState(false);
+	const [isEditModal, setIsEditModal] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
 	const [totalItem, setTotalItem] = useState();
@@ -26,7 +30,7 @@ const EventList = () => {
 		setLoading(true);
 		getStudentList({ "uni-id": 1, ...params, ...sortedInfo })
 			.then((result) => {
-				setEventList([...result.data.items]);
+				setStudentList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
 				setLoading(false);
 			})
@@ -70,7 +74,16 @@ const EventList = () => {
 			fixed: "right",
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
-					<Button type="link" size="small" icon={<EditOutlined />} />
+					<Button
+						onClick={() => {
+							const student = studentList.find((stu) => stu.id === record.id);
+							setStudent(student);
+							setIsEditModal(true);
+						}}
+						type="link"
+						size="small"
+						icon={<EditOutlined />}
+					/>
 				</div>
 			)
 		}
@@ -81,7 +94,8 @@ const EventList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				navigate("/club/create-event");
+				setStudent();
+				setIsEditModal(true);
 			}}
 		>
 			{"Create"}
@@ -160,7 +174,7 @@ const EventList = () => {
 					loading={loading}
 					bordered
 					columns={columns}
-					dataSource={eventList}
+					dataSource={studentList}
 					onChange={(pagination, filters, sorter) => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 						if (pagination.pageSize !== params["page-size"]) {
@@ -180,8 +194,17 @@ const EventList = () => {
 					scroll={{ x: 1200 }}
 				/>
 			</Layout.Content>
+			<StudentEdit
+				item={student}
+				onCallback={(value) => {
+					setParams({ ...defaultPage });
+					setIsEditModal(false);
+				}}
+				isEditModal={isEditModal}
+				setIsEditModal={setIsEditModal}
+			/>
 		</Layout>
 	);
 };
 
-export default EventList;
+export default StudentList;
