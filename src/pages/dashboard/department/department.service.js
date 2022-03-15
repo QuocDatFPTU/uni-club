@@ -1,18 +1,13 @@
 import axiosClient from "../../../util/axiosClient";
 
-export async function getListClub(params) {
-	const url = "/clubs";
+export const getDepaList = async (params) => {
+	const url = "/departments";
 	return axiosClient.get(url, { params });
-}
+};
 
-export async function getClubByID(id) {
-	const url = `/clubs/${id}`;
-	return axiosClient.get(url);
-}
-
-export async function updateClub(payload) {
+export async function updateDepartment(payload) {
 	const clubId = payload.id;
-	const url = `/clubs/${clubId}`;
+	const url = `/departments/${clubId}`;
 	const updateValue = {
 		...payload,
 		"uni-id": 1
@@ -20,8 +15,8 @@ export async function updateClub(payload) {
 	return axiosClient.put(url, updateValue);
 }
 
-export async function createClub(payload) {
-	const url = `/clubs`;
+export async function createDepartment(payload) {
+	const url = `/departments`;
 	const newClub = {
 		...payload,
 		"uni-id": 1
