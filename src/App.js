@@ -33,10 +33,12 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<Routes>
+				// login
 				<Route path="" element={<HomeLayout />}>
 					<Route path="" element={<Login />} />
 					<Route path="/login" element={<Login />} />
 				</Route>
+				// system admin
 				<Route
 					path="admin"
 					element={<AdminLayout sider={<AdminSider />} title="Admin" />}
@@ -45,6 +47,7 @@ const App = () => {
 					<Route path="university" element={<UniList />} />
 					<Route path="edit-university/:id" element={<UniEdit />} />
 				</Route>
+				// uni admin
 				<Route
 					path="dashboard"
 					element={
@@ -59,6 +62,7 @@ const App = () => {
 					<Route path="departments" element={<DepaList />} />
 					<Route path="students" element={<StudentList />} />
 				</Route>
+				// club admin
 				<Route
 					path="club"
 					element={
