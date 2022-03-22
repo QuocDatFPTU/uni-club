@@ -8,7 +8,6 @@ import TableCustom from "../../../components/TableCustom";
 import {
   defaultPage,
   formatDate,
-  formatDateTime,
   formatDateTimeFull,
 } from "../../../util/constant";
 import ClubEditForm from "./club-list.edit";
