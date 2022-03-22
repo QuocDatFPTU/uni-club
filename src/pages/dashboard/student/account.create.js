@@ -10,29 +10,42 @@ import {
 	Layout,
 	Button,
 	InputNumber,
-	Spin
+	Spin,
+	Select
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Content } from "antd/lib/layout/layout";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { success } from "../../../components/CustomSuccessModal";
 import {
 	formatDate,
 	formatDateTimeFull,
 	formatDateYearFirst
 } from "../../../util/constant";
-import { createUni } from "./university.service";
-const UniCreate = () => {
-	const [event, setEvent] = useState(null);
+import { getListUni } from "../university/university.service";
+import { createSchoolAdmin } from "./account.service";
 
+const { Option } = Select;
+
+const UniAccountCreate = () => {
+	const [uniList, setUniList] = useState([]);
+
+	const getUniList = async () => {
+		let res = await getListUni();
+		setUniList(res.data.items);
+	};
+
+	useEffect(() => {
+		getUniList();
+	}, []);
 	const onFinish = async (values) => {
 		values["EstablishedDate"] = moment(
 			values["EstablishedDate"],
 			formatDate
 		).format(formatDateYearFirst);
 		values["UploadedLogo"] = "";
-		let res = await createUni(values);
+		let res = await createSchoolAdmin(values);
 		if (res != null) {
 			success("Add success");
 		}
@@ -64,8 +77,8 @@ const UniCreate = () => {
 							</Col>
 							<Col span={8}>
 								<Form.Item
-									name="UniName"
-									label="University name"
+									name="UserName"
+									label="Username"
 									rules={[
 										{
 											required: true,
@@ -76,8 +89,8 @@ const UniCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="ShortName"
-									label="Short name"
+									name="Name"
+									label="Name"
 									rules={[
 										{
 											required: true,
@@ -88,8 +101,8 @@ const UniCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="UniAddress"
-									label="Address"
+									name="Email"
+									label="Email"
 									rules={[
 										{
 											required: true,
@@ -100,8 +113,8 @@ const UniCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="UniPhone"
-									label="Phone"
+									name="Password"
+									label="Password"
 									rules={[
 										{
 											required: true,
@@ -109,35 +122,11 @@ const UniCreate = () => {
 										}
 									]}
 								>
-									<Input />
+									<Input type="password" />
 								</Form.Item>
 								<Form.Item
-									name="Slogan"
-									label="Slogan"
-									rules={[
-										{
-											required: true,
-											message: "Slogan must be entered!"
-										}
-									]}
-								>
-									<TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
-								</Form.Item>
-								<Form.Item
-									name="EstablishedDate"
-									label="Established date"
-									rules={[
-										{
-											required: true,
-											message: "Date must be entered!"
-										}
-									]}
-								>
-									<DatePicker />
-								</Form.Item>
-								<Form.Item
-									name="Website"
-									label="Website"
+									name="UniId"
+									label="University"
 									rules={[
 										{
 											required: true,
@@ -145,7 +134,11 @@ const UniCreate = () => {
 										}
 									]}
 								>
-									<Input />
+									<Select>
+										{uniList.map((uni) => {
+											return <Option value={uni.id}>{uni["uni-name"]}</Option>;
+										})}
+									</Select>
 								</Form.Item>
 								<Form.Item name="is-private">
 									<Button type="primary" htmlType="submit">
@@ -161,4 +154,4 @@ const UniCreate = () => {
 	);
 };
 
-export default UniCreate;
+export default UniAccountCreate;

@@ -43,7 +43,12 @@ export const loginInitiate = (email, password) => async (dispatch) => {
 			);
 			const decode_token = jwt.decode(db_token.token);
 			const user = { ...decode_token };
+			console.log(user);
 			localStorage.setItem("__token", db_token?.token);
+			localStorage.setItem("__role", user.role);
+			localStorage.setItem("uniID", user.university);
+			localStorage.setItem("email", user.email);
+			localStorage.setItem("name", user.username);
 			dispatch(loginSuccess(user));
 		}
 	} catch (error) {

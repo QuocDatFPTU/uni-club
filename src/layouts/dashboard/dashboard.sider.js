@@ -58,9 +58,9 @@ const DashboardSider = () => {
 				<Menu.Item
 					key="3"
 					icon={<PieChartOutlined />}
-					onClick={() => navigate("/dashboard/students")}
+					onClick={() => navigate("/dashboard/account")}
 				>
-					Student
+					Account
 				</Menu.Item>
 			</Menu>
 		</Sider>

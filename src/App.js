@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Provider, useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ClubList from "../src/pages/club/club-demo/club-list.container";
@@ -21,6 +21,9 @@ import AdminLayout from "./layouts/admin/admin.layout";
 import AdminSider from "./layouts/admin/admin.sider";
 import UniEdit from "./pages/admin/university/university.edit";
 import UniCreate from "./pages/admin/university/university.create";
+import AccountList from "./pages/admin/account/account-list.container";
+import UniAccountCreate from "./pages/admin/account/account.create";
+import UniAccountEdit from "./pages/admin/account/account.edit";
 
 const AppWrapper = () => {
 	return (
@@ -39,7 +42,6 @@ const App = () => {
 					<Route path="" element={<Login />} />
 					<Route path="/login" element={<Login />} />
 				</Route>
-				// system admin
 				<Route
 					path="admin"
 					element={<AdminLayout sider={<AdminSider />} title="Admin" />}
@@ -48,8 +50,10 @@ const App = () => {
 					<Route path="university" element={<UniList />} />
 					<Route path="edit-university/:id" element={<UniEdit />} />
 					<Route path="create-university" element={<UniCreate />} />
+					<Route path="account" element={<AccountList />} />
+					<Route path="create-account" element={<UniAccountCreate />} />
+					<Route path="edit-account/:id" element={<UniAccountEdit />} />
 				</Route>
-				// uni admin
 				<Route
 					path="dashboard"
 					element={
@@ -62,9 +66,8 @@ const App = () => {
 					<Route path="" element={<Welcome />} />
 					<Route path="clubs" element={<ClubList />} />
 					<Route path="departments" element={<DepaList />} />
-					<Route path="students" element={<StudentList />} />
+					<Route path="account" element={<AccountList />} />
 				</Route>
-				// club admin
 				<Route
 					path="club"
 					element={

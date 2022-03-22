@@ -10,35 +10,52 @@ import {
 	Layout,
 	Button,
 	InputNumber,
-	Spin
+	Spin,
+	Select
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Content } from "antd/lib/layout/layout";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { success } from "../../../components/CustomSuccessModal";
 import {
 	formatDate,
 	formatDateTimeFull,
 	formatDateYearFirst
 } from "../../../util/constant";
-import { createUni } from "./university.service";
-const UniCreate = () => {
-	const [event, setEvent] = useState(null);
+import { getListUni } from "../university/university.service";
+import { createSchoolAdmin, getAccountById } from "./account.service";
 
+const { Option } = Select;
+
+const UniAccountEdit = () => {
+	const [account, setAccount] = useState(null);
+	const { id } = useParams();
+
+	const getAccount = async () => {
+		let res = await getAccountById(id);
+		setAccount(res.data);
+	};
+
+	useEffect(() => {
+		getAccount();
+	}, []);
 	const onFinish = async (values) => {
 		values["EstablishedDate"] = moment(
 			values["EstablishedDate"],
 			formatDate
 		).format(formatDateYearFirst);
 		values["UploadedLogo"] = "";
-		let res = await createUni(values);
+		let res = await createSchoolAdmin(values);
 		if (res != null) {
 			success("Add success");
 		}
 	};
 
-	return (
+	return account == null ? (
+		<Spin size="large" />
+	) : (
 		<Layout className="layoutContent">
 			<PageHeader
 				onBack={() => window.history.back()}
@@ -48,7 +65,15 @@ const UniCreate = () => {
 			/>
 			<Content style={{ backgroundColor: "white" }}>
 				<div className="site-layout-content">
-					<Form onFinish={onFinish} layout="vertical">
+					<Form
+						initialValues={{
+							UserName: account["user-name"],
+							Name: account.name,
+							Email: account.email
+						}}
+						onFinish={onFinish}
+						layout="vertical"
+					>
 						<Row>
 							<Col offset={4} span={5}>
 								<Form.Item name="UploadedLogo" label="University Image">
@@ -64,8 +89,8 @@ const UniCreate = () => {
 							</Col>
 							<Col span={8}>
 								<Form.Item
-									name="UniName"
-									label="University name"
+									name="UserName"
+									label="Username"
 									rules={[
 										{
 											required: true,
@@ -76,8 +101,8 @@ const UniCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="ShortName"
-									label="Short name"
+									name="Name"
+									label="Name"
 									rules={[
 										{
 											required: true,
@@ -88,8 +113,8 @@ const UniCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="UniAddress"
-									label="Address"
+									name="Email"
+									label="Email"
 									rules={[
 										{
 											required: true,
@@ -99,57 +124,9 @@ const UniCreate = () => {
 								>
 									<Input />
 								</Form.Item>
-								<Form.Item
-									name="UniPhone"
-									label="Phone"
-									rules={[
-										{
-											required: true,
-											message: "Phone must be entered!"
-										}
-									]}
-								>
-									<Input />
-								</Form.Item>
-								<Form.Item
-									name="Slogan"
-									label="Slogan"
-									rules={[
-										{
-											required: true,
-											message: "Slogan must be entered!"
-										}
-									]}
-								>
-									<TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
-								</Form.Item>
-								<Form.Item
-									name="EstablishedDate"
-									label="Established date"
-									rules={[
-										{
-											required: true,
-											message: "Date must be entered!"
-										}
-									]}
-								>
-									<DatePicker />
-								</Form.Item>
-								<Form.Item
-									name="Website"
-									label="Website"
-									rules={[
-										{
-											required: true,
-											message: "Website participants must be entered!"
-										}
-									]}
-								>
-									<Input />
-								</Form.Item>
 								<Form.Item name="is-private">
 									<Button type="primary" htmlType="submit">
-										Create
+										Edit
 									</Button>
 								</Form.Item>
 							</Col>
@@ -161,4 +138,4 @@ const UniCreate = () => {
 	);
 };
 
-export default UniCreate;
+export default UniAccountEdit;

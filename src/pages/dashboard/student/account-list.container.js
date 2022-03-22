@@ -5,16 +5,21 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
-import { defaultPage } from "../../../util/constant";
-import { getMemberList } from "./member.service";
+import {
+	defaultPage,
+	formatDate,
+	formatDateTime,
+	formatDateTimeFull
+} from "../../../util/constant";
+import { getListAccount } from "./account.service";
 
 const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const MemberList = () => {
+const AccountList = () => {
 	const navigate = useNavigate();
-	const [eventList, setEventList] = useState([]);
+	const [uniList, setUniList] = useState([]);
 	const [loading, setLoading] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
@@ -22,11 +27,11 @@ const MemberList = () => {
 	const [sortedInfo] = useState(defaultSort);
 	const [form] = Form.useForm();
 
-	const fetchMember = (params, sortedInfo) => {
+	const fetchUni = (params, sortedInfo) => {
 		setLoading(true);
-		getMemberList({ "uni-id": 1, ...params, ...sortedInfo })
+		getListAccount({ ...params, ...sortedInfo })
 			.then((result) => {
-				setEventList([...result.data.items]);
+				setUniList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
 				setLoading(false);
 			})
@@ -34,27 +39,35 @@ const MemberList = () => {
 	};
 
 	useEffect(() => {
-		fetchMember(params, sortedInfo);
+		fetchUni(params, sortedInfo);
 	}, [params, sortedInfo]);
 
 	const columns = [
 		{
-			title: "Name",
-			dataIndex: "name",
-			key: "name",
+			title: "Username",
+			dataIndex: "user-name",
+			width: "12%",
+			ellipsis: true,
+			render: (text, record) => {
+				return (
+					<Button
+						size="small"
+						type="link"
+						onClick={() => navigate(`${record.id}`)}
+					>
+						{text}
+					</Button>
+				);
+			}
+		},
+		{
+			title: "Email",
+			dataIndex: "email",
 			width: "12%"
 		},
 		{
-			title: "Gender",
-			dataIndex: "gender",
-			key: "gender",
-			width: "12%",
-			render: (gender) => <>{gender ? "Male" : "Female"}</>
-		},
-		{
-			title: "Department",
-			dataIndex: "dep-id",
-			key: "dep-id",
+			title: "Role name",
+			dataIndex: "name",
 			width: "12%"
 		},
 		{
@@ -64,7 +77,14 @@ const MemberList = () => {
 			fixed: "right",
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
-					<Button type="link" size="small" icon={<EditOutlined />} />
+					<Button
+						type="link"
+						size="small"
+						icon={<EditOutlined />}
+						onClick={() => {
+							navigate(`/admin/edit-account/${record.id}`);
+						}}
+					/>
 				</div>
 			)
 		}
@@ -75,7 +95,7 @@ const MemberList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				navigate("/club/create-event");
+				navigate("/admin/create-account");
 			}}
 		>
 			{"Create"}
@@ -85,12 +105,12 @@ const MemberList = () => {
 
 	const routes = [
 		{
-			path: "index",
-			breadcrumbName: "Dashboard"
+			path: "/dashboard",
+			breadcrumbName: "Home"
 		},
 		{
-			path: "first",
-			breadcrumbName: "Member"
+			path: "/dashboard",
+			breadcrumbName: "University"
 		}
 	];
 
@@ -98,7 +118,7 @@ const MemberList = () => {
 		<Layout className="layoutContent">
 			<PageHeader
 				ghost={false}
-				title="Member"
+				title="Account"
 				extra={extraButton}
 				breadcrumb={routes}
 				className="customPageHeader"
@@ -146,7 +166,7 @@ const MemberList = () => {
 					title={() => (
 						<Row>
 							<Col span={12}>
-								<h3> {"Event List"}</h3>
+								<h3> {"University List"}</h3>
 							</Col>
 						</Row>
 					)}
@@ -154,7 +174,7 @@ const MemberList = () => {
 					loading={loading}
 					bordered
 					columns={columns}
-					dataSource={eventList}
+					dataSource={uniList}
 					onChange={(pagination, filters, sorter) => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 						if (pagination.pageSize !== params["page-size"]) {
@@ -178,4 +198,4 @@ const MemberList = () => {
 	);
 };
 
-export default MemberList;
+export default AccountList;

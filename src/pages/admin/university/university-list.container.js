@@ -23,7 +23,6 @@ const UniList = () => {
 	const [uniList, setUniList] = useState([]);
 
 	const [loading, setLoading] = useState(false);
-	const [isEditModal, setIsEditModal] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
 	const [totalItem, setTotalItem] = useState();
@@ -32,7 +31,7 @@ const UniList = () => {
 
 	const fetchUni = (params, sortedInfo) => {
 		setLoading(true);
-		getListUni({ "uni-id": 1, ...params, ...sortedInfo })
+		getListUni({ ...params, ...sortedInfo })
 			.then((result) => {
 				setUniList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
