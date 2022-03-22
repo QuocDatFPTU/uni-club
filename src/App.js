@@ -16,6 +16,11 @@ import EventEdit from "./pages/club/event/event-list.edit";
 import DepaList from "./pages/dashboard/department/department-list.container";
 import StudentList from "./pages/dashboard/student/student-list.container";
 import MemberList from "./pages/club/member/member.container";
+import UniList from "./pages/admin/university-list.container";
+import AdminLayout from "./layouts/admin/admin.layout";
+import AdminSider from "./layouts/admin/admin.sider";
+import UniEdit from "./pages/admin/university.edit";
+
 const AppWrapper = () => {
 	return (
 		<Provider store={store}>
@@ -31,6 +36,14 @@ const App = () => {
 				<Route path="" element={<HomeLayout />}>
 					<Route path="" element={<Login />} />
 					<Route path="/login" element={<Login />} />
+				</Route>
+				<Route
+					path="admin"
+					element={<AdminLayout sider={<AdminSider />} title="Admin" />}
+				>
+					<Route path="" element={<Welcome />} />
+					<Route path="university" element={<UniList />} />
+					<Route path="edit-university/:id" element={<UniEdit />} />
 				</Route>
 				<Route
 					path="dashboard"
