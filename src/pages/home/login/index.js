@@ -1,31 +1,26 @@
+import React, {useEffect, useState} from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, Row } from "antd";
+import { Button, Col, Form, Input, message, Row } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import bgLogin from "../../../assets/bgLogin.jpg";
 import logo from "../../../assets/u1.png";
-import "./styles.less";
 import { loginInitiate } from "../../../redux/action";
+import "./styles.less";
 
 const Login = () => {
-  const { currentUser } = useSelector((state) => state.user);
-
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (currentUser) {
-      navigate("/dashboard");
-    }
-  }, [currentUser, navigate]);
   const dispatch = useDispatch();
 
   const handleSubmit = (value) => {
     const { username, password } = value;
-    if (!username || !password) {
-      return;
-    }
-    dispatch(loginInitiate(username, password));
+     dispatch(loginInitiate(username, password)).then(( result ) => {
+        if (!result?.error) {
+          navigate('/dashboard')
+        }
+     
+     });
   };
 
   // Listen to the Firebase Auth state and set the local state.
@@ -68,7 +63,6 @@ const Login = () => {
               <Form
                 name="normal_login"
                 className="login-form"
-                initialValues={{ remember: true }}
                 onFinish={handleSubmit}
                 style={{ width: 300 }}
               >
