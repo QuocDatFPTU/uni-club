@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const ClubSider = () => {
+const AdminSider = () => {
 	const [collapse, setCollapse] = useState(true);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
@@ -47,20 +47,20 @@ const ClubSider = () => {
 				<Menu.Item
 					key="1"
 					icon={<CalendarOutlined />}
-					onClick={() => navigate("/club/event")}
+					onClick={() => navigate("/admin/university")}
 				>
-					Event
+					University
 				</Menu.Item>
 				<Menu.Item
 					key="2"
 					icon={<TeamOutlined />}
-					onClick={() => navigate("/club/member")}
+					onClick={() => navigate("/admin/account")}
 				>
-					Member
+					University account
 				</Menu.Item>
 			</Menu>
 		</Sider>
 	);
 };
 
-export default ClubSider;
+export default AdminSider;

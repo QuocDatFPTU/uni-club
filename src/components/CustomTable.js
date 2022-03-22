@@ -64,16 +64,6 @@ const DataTable = (props) => {
 	return (
 		<IdContext.Provider value={{ id, setId }}>
 			<Layout className="layoutContent">
-				<PageHeader
-					ghost={false}
-					title={"Member"}
-					extra={extraButton(() => {
-						showModal();
-						setEditOrCreate(false);
-					})}
-					breadcrumb={{ routes }}
-					className="customPageHeader"
-				/>
 				<Layout.Content>
 					<Card size="small" className="cardSearch">
 						{data == null ? (

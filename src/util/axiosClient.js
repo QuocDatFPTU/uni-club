@@ -1,5 +1,6 @@
 import axios from "axios";
 import queryString from "query-string";
+import firebase from "firebase";
 // Set up default config for http requests here
 
 // Please have a look at here `https://github.com/axios/axios#request-
@@ -12,8 +13,17 @@ const axiosClient = axios.create({
   paramsSerializer: (params) => queryString.stringify(params),
 });
 axiosClient.interceptors.request.use(async (config) => {
+  const access_token = await localStorage.getItem("__token");
+  if (access_token) {
+      config.headers.Authorization = `Bearer ${access_token}`;
+  }
   // Handle token here ...
-  return config;
+  // const currentUser = firebase.auth().currentUser;
+  // if (currentUser) {
+  //   const token = await currentUser.getIdToken();
+  //   config.headers.Authorization = `Bearer ${token}`;
+  // }
+   return config;
 });
 axiosClient.interceptors.response.use(
   (response) => {

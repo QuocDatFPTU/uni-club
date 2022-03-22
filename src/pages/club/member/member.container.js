@@ -52,12 +52,6 @@ const MemberList = () => {
 			render: (gender) => <>{gender ? "Male" : "Female"}</>
 		},
 		{
-			title: "Address",
-			dataIndex: "address",
-			key: "address",
-			width: "12%"
-		},
-		{
 			title: "Department",
 			dataIndex: "dep-id",
 			key: "dep-id",

@@ -5,31 +5,33 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
-import { defaultPage } from "../../../util/constant";
-import { getDepaList } from "./department.service";
-import DepaEdit from "./department.edit";
+import {
+	defaultPage,
+	formatDate,
+	formatDateTime,
+	formatDateTimeFull
+} from "../../../util/constant";
+import { getListAccount } from "./account.service";
+
 const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const DepaList = () => {
+const AccountList = () => {
 	const navigate = useNavigate();
-	const [depaList, setDepaList] = useState([]);
-	const [department, setDepartment] = useState();
-
+	const [uniList, setUniList] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [isEditModal, setIsEditModal] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
 	const [totalItem, setTotalItem] = useState();
 	const [sortedInfo] = useState(defaultSort);
 	const [form] = Form.useForm();
 
-	const fetchDepartment = (params, sortedInfo) => {
+	const fetchUni = (params, sortedInfo) => {
 		setLoading(true);
-		getDepaList({ "uni-id": 1, ...params, ...sortedInfo })
+		getListAccount({ ...params, ...sortedInfo })
 			.then((result) => {
-				setDepaList([...result.data.items]);
+				setUniList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
 				setLoading(false);
 			})
@@ -37,20 +39,35 @@ const DepaList = () => {
 	};
 
 	useEffect(() => {
-		fetchDepartment(params, sortedInfo);
+		fetchUni(params, sortedInfo);
 	}, [params, sortedInfo]);
 
 	const columns = [
 		{
-			title: "Short name",
-			dataIndex: "short-name",
-			key: "short-name",
+			title: "Username",
+			dataIndex: "user-name",
+			width: "12%",
+			ellipsis: true,
+			render: (text, record) => {
+				return (
+					<Button
+						size="small"
+						type="link"
+						onClick={() => navigate(`${record.id}`)}
+					>
+						{text}
+					</Button>
+				);
+			}
+		},
+		{
+			title: "Email",
+			dataIndex: "email",
 			width: "12%"
 		},
 		{
-			title: "Name",
-			dataIndex: "dep-name",
-			key: "dep-name",
+			title: "Role name",
+			dataIndex: "name",
 			width: "12%"
 		},
 		{
@@ -61,16 +78,12 @@ const DepaList = () => {
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
 					<Button
-						onClick={() => {
-							const departmentDetail = depaList.find(
-								(depa) => depa.id === record.id
-							);
-							setDepartment(departmentDetail);
-							setIsEditModal(true);
-						}}
 						type="link"
 						size="small"
 						icon={<EditOutlined />}
+						onClick={() => {
+							navigate(`/admin/edit-account/${record.id}`);
+						}}
 					/>
 				</div>
 			)
@@ -82,8 +95,7 @@ const DepaList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				setDepartment();
-				setIsEditModal(true);
+				navigate("/admin/create-account");
 			}}
 		>
 			{"Create"}
@@ -93,12 +105,12 @@ const DepaList = () => {
 
 	const routes = [
 		{
-			path: "index",
-			breadcrumbName: "Dashboard"
+			path: "/dashboard",
+			breadcrumbName: "Home"
 		},
 		{
-			path: "first",
-			breadcrumbName: "Department"
+			path: "/dashboard",
+			breadcrumbName: "University"
 		}
 	];
 
@@ -106,7 +118,7 @@ const DepaList = () => {
 		<Layout className="layoutContent">
 			<PageHeader
 				ghost={false}
-				title="Department"
+				title="Account"
 				extra={extraButton}
 				breadcrumb={routes}
 				className="customPageHeader"
@@ -154,7 +166,7 @@ const DepaList = () => {
 					title={() => (
 						<Row>
 							<Col span={12}>
-								<h3> {"Deparment List"}</h3>
+								<h3> {"University List"}</h3>
 							</Col>
 						</Row>
 					)}
@@ -162,7 +174,7 @@ const DepaList = () => {
 					loading={loading}
 					bordered
 					columns={columns}
-					dataSource={depaList}
+					dataSource={uniList}
 					onChange={(pagination, filters, sorter) => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 						if (pagination.pageSize !== params["page-size"]) {
@@ -181,18 +193,9 @@ const DepaList = () => {
 					}}
 					scroll={{ x: 1200 }}
 				/>
-				<DepaEdit
-					item={department}
-					onCallback={(value) => {
-						setParams({ ...defaultPage });
-						setIsEditModal(false);
-					}}
-					isEditModal={isEditModal}
-					setIsEditModal={setIsEditModal}
-				/>
 			</Layout.Content>
 		</Layout>
 	);
 };
 
-export default DepaList;
+export default AccountList;
