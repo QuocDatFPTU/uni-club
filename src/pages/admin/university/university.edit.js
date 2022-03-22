@@ -17,12 +17,17 @@ import { Content } from "antd/lib/layout/layout";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { success } from "../../components/CustomSuccessModal";
-import { formatDate, formatDateTimeFull } from "../../util/constant";
+import { success } from "../../../components/CustomSuccessModal";
+import {
+	formatDate,
+	formatDateTimeFull,
+	formatDateYearFirst
+} from "../../../util/constant";
 import { getUniById, updateUni } from "./university.service";
 const UniEdit = () => {
 	const [event, setEvent] = useState(null);
 	const { id } = useParams();
+	console.log(id);
 	const fetchEvent = async (id) => {
 		let res = await getUniById(id);
 		console.log(res.data);
@@ -30,15 +35,25 @@ const UniEdit = () => {
 	};
 
 	useEffect(() => {
+		console.log(id);
 		fetchEvent(id);
 	}, []);
 
 	const onFinish = async (values) => {
-		values["end-date"] =
-			moment(values["end-date"], formatDate).format(formatDateTimeFull) + "Z";
-		values["start-date"] =
-			moment(values["start-date"], formatDate).format(formatDateTimeFull) + "Z";
-		let res = await updateUni(values, id);
+		let input = {
+			Id: id,
+			UniName: values["uni-name"],
+			UniAddress: values["uni-address"],
+			UniPhone: values["uni-phone"],
+			LogoUrl: values["logo-url"],
+			Slogan: values["slogan"],
+			EstablishedDate: moment(values["established-date"], formatDate).format(
+				formatDateYearFirst
+			),
+			Website: values["website"],
+			ShortName: values["short-name"]
+		};
+		let res = await updateUni(input);
 		console.log(res);
 		if (res != null) {
 			success("Edit success");
@@ -59,22 +74,23 @@ const UniEdit = () => {
 				<div className="site-layout-content">
 					<Form
 						initialValues={{
-							description: event.description,
-							"event-name": event["event-name"],
-							"is-private": event["is-private"],
-							location: event.location,
-							"max-participants": event["max-participants"],
-							point: event.point,
-							"image-url": event["image-url"],
-							"start-date": moment(event["start-date"]),
-							"end-date": moment(event["start-date"])
+							id: event.id,
+							"uni-name": event["uni-name"],
+							"uni-address": event["uni-address"],
+							"uni-phone": event["uni-phone"],
+							"logo-url": event["logo-url"],
+							slogan: event.slogan,
+							"established-date": moment(event["established-date"]),
+							website: event.website,
+							"short-name": event["short-name"],
+							"is-deleted": event["is-deleted"]
 						}}
 						onFinish={onFinish}
 						layout="vertical"
 					>
 						<Row>
 							<Col offset={4} span={5}>
-								<Form.Item name="avatar-url" label="Event Image">
+								<Form.Item name="logo-url" label="University Image">
 									<Upload
 										accept="image/*"
 										maxCount={1}
@@ -87,8 +103,8 @@ const UniEdit = () => {
 							</Col>
 							<Col span={8}>
 								<Form.Item
-									name="event-name"
-									label="Name"
+									name="uni-name"
+									label="University name"
 									rules={[
 										{
 											required: true,
@@ -99,82 +115,76 @@ const UniEdit = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="start-date"
-									label="Start Date"
+									name="short-name"
+									label="University name"
 									rules={[
 										{
 											required: true,
-											message: "Start date must be entered!"
-										}
-									]}
-								>
-									<DatePicker />
-								</Form.Item>
-								<Form.Item
-									name="end-date"
-									label="End Date"
-									rules={[
-										{
-											required: true,
-											message: "End date must be entered!"
-										}
-									]}
-								>
-									<DatePicker />
-								</Form.Item>
-								<Form.Item
-									name="location"
-									label="Location"
-									rules={[
-										{
-											required: true,
-											message: "Location must be entered!"
+											message: "Event name must be entered!"
 										}
 									]}
 								>
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="point"
-									label="Point"
+									name="uni-address"
+									label="Address"
 									rules={[
 										{
 											required: true,
-											message: "Point must be entered!"
+											message: "Address must be entered!"
 										}
 									]}
 								>
-									<InputNumber />
+									<Input />
 								</Form.Item>
 								<Form.Item
-									name="max-participants"
-									label="Max participants"
+									name="uni-phone"
+									label="Phone"
 									rules={[
 										{
 											required: true,
-											message: "Max participants must be entered!"
+											message: "Phone must be entered!"
 										}
 									]}
 								>
-									<InputNumber />
+									<Input />
 								</Form.Item>
 								<Form.Item
-									name="description"
-									label="Description"
+									name="slogan"
+									label="Slogan"
 									rules={[
 										{
 											required: true,
-											message: "Description must be entered!"
+											message: "Slogan must be entered!"
 										}
 									]}
 								>
 									<TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
 								</Form.Item>
-								<Form.Item name="is-private" label="Status">
-									<Switch
-										checkedChildren="Public"
-										unCheckedChildren="Private"
-									/>
+								<Form.Item
+									name="established-date"
+									label="Established date"
+									rules={[
+										{
+											required: true,
+											message: "Date must be entered!"
+										}
+									]}
+								>
+									<DatePicker />
+								</Form.Item>
+								<Form.Item
+									name="website"
+									label="Website"
+									rules={[
+										{
+											required: true,
+											message: "Website participants must be entered!"
+										}
+									]}
+								>
+									<Input />
 								</Form.Item>
 								<Form.Item name="is-private">
 									<Button type="primary" htmlType="submit">

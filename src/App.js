@@ -16,10 +16,11 @@ import EventEdit from "./pages/club/event/event-list.edit";
 import DepaList from "./pages/dashboard/department/department-list.container";
 import StudentList from "./pages/dashboard/student/student-list.container";
 import MemberList from "./pages/club/member/member.container";
-import UniList from "./pages/admin/university-list.container";
+import UniList from "./pages/admin/university/university-list.container";
 import AdminLayout from "./layouts/admin/admin.layout";
 import AdminSider from "./layouts/admin/admin.sider";
-import UniEdit from "./pages/admin/university.edit";
+import UniEdit from "./pages/admin/university/university.edit";
+import UniCreate from "./pages/admin/university/university.create";
 
 const AppWrapper = () => {
 	return (
@@ -46,6 +47,7 @@ const App = () => {
 					<Route path="" element={<Welcome />} />
 					<Route path="university" element={<UniList />} />
 					<Route path="edit-university/:id" element={<UniEdit />} />
+					<Route path="create-university" element={<UniCreate />} />
 				</Route>
 				// uni admin
 				<Route

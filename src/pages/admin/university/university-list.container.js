@@ -4,13 +4,13 @@ import { pickBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TableCustom from "../../components/TableCustom";
+import TableCustom from "../../../components/TableCustom";
 import {
 	defaultPage,
 	formatDate,
 	formatDateTime,
 	formatDateTimeFull
-} from "../../../src/util/constant";
+} from "../../../util/constant";
 import { getListUni } from "./university.service";
 import UniEditForm from "./university.edit";
 
@@ -91,7 +91,7 @@ const UniList = () => {
 						size="small"
 						icon={<EditOutlined />}
 						onClick={() => {
-							navigate(`/edit-university/${record.id}`);
+							navigate(`/admin/edit-university/${record.id}`);
 						}}
 					/>
 				</div>
@@ -104,7 +104,7 @@ const UniList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				navigate("/university/create");
+				navigate("/admin/create-university");
 			}}
 		>
 			{"Create"}
