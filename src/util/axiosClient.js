@@ -13,6 +13,10 @@ const axiosClient = axios.create({
   paramsSerializer: (params) => queryString.stringify(params),
 });
 axiosClient.interceptors.request.use(async (config) => {
+  const access_token = await localStorage.getItem("__token");
+  if (access_token) {
+      config.headers.Authorization = `Bearer ${access_token}`;
+  }
   // Handle token here ...
   // const currentUser = firebase.auth().currentUser;
   // if (currentUser) {
