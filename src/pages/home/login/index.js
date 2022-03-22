@@ -9,18 +9,23 @@ import { loginInitiate } from "../../../redux/action";
 import "./styles.less";
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
   const handleSubmit = (value) => {
     const { username, password } = value;
-     dispatch(loginInitiate(username, password)).then(( result ) => {
+     dispatch(loginInitiate(username, password))
+        .then(( result ) => {
         if (!result?.error) {
-          navigate('/dashboard')
+        navigate('/dashboard')
         }
-     
-     });
+     })
+        .catch(error => message.error(error));
+     message.success("Login success");
+     setLoading(true);
+     return true;
   };
 
   // Listen to the Firebase Auth state and set the local state.
@@ -96,6 +101,7 @@ const Login = () => {
                     type="primary"
                     htmlType="submit"
                     className="login-form-button"
+                    loading={loading}
                   >
                     Đăng nhập
                   </Button>
