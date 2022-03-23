@@ -58,13 +58,6 @@ const ClubSider = () => {
 				>
 					Member
 				</Menu.Item>
-				<Menu.Item
-					key="3"
-					icon={<FileOutlined />}
-					onClick={() => navigate("/club/recruitment")}
-				>
-					Recruitment
-				</Menu.Item>
 			</Menu>
 		</Sider>
 	);

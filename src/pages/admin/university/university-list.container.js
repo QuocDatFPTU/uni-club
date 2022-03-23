@@ -5,16 +5,23 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
-import { defaultPage } from "../../../util/constant";
-import { getMemberList } from "./member.service";
+import {
+	defaultPage,
+	formatDate,
+	formatDateTime,
+	formatDateTimeFull
+} from "../../../util/constant";
+import { getListUni } from "./university.service";
+import UniEditForm from "./university.edit";
 
 const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const MemberList = () => {
+const UniList = () => {
 	const navigate = useNavigate();
-	const [eventList, setEventList] = useState([]);
+	const [uniList, setUniList] = useState([]);
+
 	const [loading, setLoading] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
@@ -22,11 +29,11 @@ const MemberList = () => {
 	const [sortedInfo] = useState(defaultSort);
 	const [form] = Form.useForm();
 
-	const fetchMember = (params, sortedInfo) => {
+	const fetchUni = (params, sortedInfo) => {
 		setLoading(true);
-		getMemberList({ "uni-id": 1, ...params, ...sortedInfo })
+		getListUni({ ...params, ...sortedInfo })
 			.then((result) => {
-				setEventList([...result.data.items]);
+				setUniList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
 				setLoading(false);
 			})
@@ -34,28 +41,42 @@ const MemberList = () => {
 	};
 
 	useEffect(() => {
-		fetchMember(params, sortedInfo);
+		fetchUni(params, sortedInfo);
 	}, [params, sortedInfo]);
 
 	const columns = [
 		{
-			title: "Name",
-			dataIndex: "name",
-			key: "name",
+			title: "University name",
+			dataIndex: "uni-name",
+			key: "club-name",
+			width: "25%",
+			ellipsis: true,
+			render: (text, record) => {
+				return (
+					<Button
+						size="small"
+						type="link"
+						onClick={() => navigate(`${record.id}`)}
+					>
+						{text}
+					</Button>
+				);
+			}
+		},
+		{
+			title: "Short name",
+			dataIndex: "short-name",
+			key: "short-name",
 			width: "12%"
 		},
 		{
-			title: "Gender",
-			dataIndex: "gender",
-			key: "gender",
+			title: "Established Date",
+			dataIndex: "established-date",
+			key: "established-date",
 			width: "12%",
-			render: (gender) => <>{gender ? "Male" : "Female"}</>
-		},
-		{
-			title: "Department",
-			dataIndex: "dep-id",
-			key: "dep-id",
-			width: "12%"
+			render: (value) => {
+				return moment(value, formatDateTimeFull).format(formatDate);
+			}
 		},
 		{
 			title: "Action",
@@ -64,7 +85,14 @@ const MemberList = () => {
 			fixed: "right",
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
-					<Button type="link" size="small" icon={<EditOutlined />} />
+					<Button
+						type="link"
+						size="small"
+						icon={<EditOutlined />}
+						onClick={() => {
+							navigate(`/admin/edit-university/${record.id}`);
+						}}
+					/>
 				</div>
 			)
 		}
@@ -75,7 +103,7 @@ const MemberList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				navigate("/club/create-event");
+				navigate("/admin/create-university");
 			}}
 		>
 			{"Create"}
@@ -85,12 +113,12 @@ const MemberList = () => {
 
 	const routes = [
 		{
-			path: "index",
-			breadcrumbName: "Dashboard"
+			path: "/dashboard",
+			breadcrumbName: "Home"
 		},
 		{
-			path: "first",
-			breadcrumbName: "Member"
+			path: "/dashboard",
+			breadcrumbName: "University"
 		}
 	];
 
@@ -98,7 +126,7 @@ const MemberList = () => {
 		<Layout className="layoutContent">
 			<PageHeader
 				ghost={false}
-				title="Member"
+				title="University"
 				extra={extraButton}
 				breadcrumb={routes}
 				className="customPageHeader"
@@ -146,7 +174,7 @@ const MemberList = () => {
 					title={() => (
 						<Row>
 							<Col span={12}>
-								<h3> {"Event List"}</h3>
+								<h3> {"University List"}</h3>
 							</Col>
 						</Row>
 					)}
@@ -154,7 +182,7 @@ const MemberList = () => {
 					loading={loading}
 					bordered
 					columns={columns}
-					dataSource={eventList}
+					dataSource={uniList}
 					onChange={(pagination, filters, sorter) => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 						if (pagination.pageSize !== params["page-size"]) {
@@ -178,4 +206,4 @@ const MemberList = () => {
 	);
 };
 
-export default MemberList;
+export default UniList;

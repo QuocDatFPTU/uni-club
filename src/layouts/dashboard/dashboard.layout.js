@@ -8,22 +8,27 @@ import {
 	LoginOutlined
 } from "@ant-design/icons";
 import "./styles.less";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 const { Header } = Layout;
 
 // import logo from "assets/logo.png";
 
 const DashboardLayout = (props) => {
+	const navigate = useNavigate();
 	const menu = (
-		<Menu>
+		<Menu
+			onClick={(e) => {
+				if (e.key == 1) {
+					localStorage.clear();
+					navigate("/");
+				}
+			}}
+		>
 			<Menu.Item key="0" disabled style={{ cursor: "default" }}>
-				<div>Dat32@gmail.com</div>
+				<div>{localStorage.getItem("email")}</div>
 			</Menu.Item>
 			<Menu.Divider />
 			<Menu.Item key="1">
-				<EditOutlined /> {"Change password"}
-			</Menu.Item>
-			<Menu.Item key="2">
 				<LoginOutlined /> {"Log out"}
 			</Menu.Item>
 		</Menu>
@@ -54,7 +59,7 @@ const DashboardLayout = (props) => {
 												marginLeft: 3
 											}}
 										>
-											{"DatNQ32"}
+											{localStorage.getItem("name")}
 										</div>
 										<DownOutlined
 											style={{

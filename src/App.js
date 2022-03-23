@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Provider, useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ClubList from "../src/pages/club/club-demo/club-list.container";
@@ -16,10 +16,14 @@ import EventEdit from "./pages/club/event/event-list.edit";
 import DepaList from "./pages/dashboard/department/department-list.container";
 import StudentList from "./pages/dashboard/student/student-list.container";
 import MemberList from "./pages/club/member/member.container";
-import UniList from "./pages/admin/university-list.container";
+import UniList from "./pages/admin/university/university-list.container";
 import AdminLayout from "./layouts/admin/admin.layout";
 import AdminSider from "./layouts/admin/admin.sider";
-import UniEdit from "./pages/admin/university.edit";
+import UniEdit from "./pages/admin/university/university.edit";
+import UniCreate from "./pages/admin/university/university.create";
+import AccountList from "./pages/admin/account/account-list.container";
+import UniAccountCreate from "./pages/admin/account/account.create";
+import UniAccountEdit from "./pages/admin/account/account.edit";
 
 const AppWrapper = () => {
 	return (
@@ -33,6 +37,7 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<Routes>
+				// login
 				<Route path="" element={<HomeLayout />}>
 					<Route path="" element={<Login />} />
 					<Route path="/login" element={<Login />} />
@@ -44,6 +49,10 @@ const App = () => {
 					<Route path="" element={<Welcome />} />
 					<Route path="university" element={<UniList />} />
 					<Route path="edit-university/:id" element={<UniEdit />} />
+					<Route path="create-university" element={<UniCreate />} />
+					<Route path="account" element={<AccountList />} />
+					<Route path="create-account" element={<UniAccountCreate />} />
+					<Route path="edit-account/:id" element={<UniAccountEdit />} />
 				</Route>
 				<Route
 					path="dashboard"
@@ -57,7 +66,7 @@ const App = () => {
 					<Route path="" element={<Welcome />} />
 					<Route path="clubs" element={<ClubList />} />
 					<Route path="departments" element={<DepaList />} />
-					<Route path="students" element={<StudentList />} />
+					<Route path="account" element={<AccountList />} />
 				</Route>
 				<Route
 					path="club"

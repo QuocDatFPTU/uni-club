@@ -4,26 +4,23 @@ import { pickBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TableCustom from "../../components/TableCustom";
+import TableCustom from "../../../components/TableCustom";
 import {
 	defaultPage,
 	formatDate,
 	formatDateTime,
 	formatDateTimeFull
-} from "../../../src/util/constant";
-import { getListUni } from "./university.service";
-import UniEditForm from "./university.edit";
+} from "../../../util/constant";
+import { getListAccount } from "./account.service";
 
 const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const UniList = () => {
+const AccountList = () => {
 	const navigate = useNavigate();
 	const [uniList, setUniList] = useState([]);
-
 	const [loading, setLoading] = useState(false);
-	const [isEditModal, setIsEditModal] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
 	const [totalItem, setTotalItem] = useState();
@@ -32,7 +29,7 @@ const UniList = () => {
 
 	const fetchUni = (params, sortedInfo) => {
 		setLoading(true);
-		getListUni({ "uni-id": 1, ...params, ...sortedInfo })
+		getListAccount({ ...params, ...sortedInfo })
 			.then((result) => {
 				setUniList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
@@ -47,10 +44,9 @@ const UniList = () => {
 
 	const columns = [
 		{
-			title: "University name",
-			dataIndex: "uni-name",
-			key: "club-name",
-			width: "25%",
+			title: "Username",
+			dataIndex: "user-name",
+			width: "12%",
 			ellipsis: true,
 			render: (text, record) => {
 				return (
@@ -65,19 +61,14 @@ const UniList = () => {
 			}
 		},
 		{
-			title: "Short name",
-			dataIndex: "short-name",
-			key: "short-name",
+			title: "Email",
+			dataIndex: "email",
 			width: "12%"
 		},
 		{
-			title: "Established Date",
-			dataIndex: "established-date",
-			key: "established-date",
-			width: "12%",
-			render: (value) => {
-				return moment(value, formatDateTimeFull).format(formatDate);
-			}
+			title: "Role name",
+			dataIndex: "name",
+			width: "12%"
 		},
 		{
 			title: "Action",
@@ -91,7 +82,7 @@ const UniList = () => {
 						size="small"
 						icon={<EditOutlined />}
 						onClick={() => {
-							navigate(`/edit-university/${record.id}`);
+							navigate(`/admin/edit-account/${record.id}`);
 						}}
 					/>
 				</div>
@@ -104,7 +95,7 @@ const UniList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				navigate("/university/create");
+				navigate("/admin/create-account");
 			}}
 		>
 			{"Create"}
@@ -127,7 +118,7 @@ const UniList = () => {
 		<Layout className="layoutContent">
 			<PageHeader
 				ghost={false}
-				title="University"
+				title="Account"
 				extra={extraButton}
 				breadcrumb={routes}
 				className="customPageHeader"
@@ -207,4 +198,4 @@ const UniList = () => {
 	);
 };
 
-export default UniList;
+export default AccountList;
