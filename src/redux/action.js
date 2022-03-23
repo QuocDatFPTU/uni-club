@@ -39,7 +39,7 @@ export const loginInitiate = (email, password) => async dispatch => {
         const db_token = await axiosClient.post('authentication/login', {token: `${token}`}, { headers: {"content-type": "application/json-patch+json"}});
         const decode_token = jwt.decode(db_token.token);
         const user = {...decode_token};
-        localStorage.setItem("__token", JSON.stringify(db_token?.token));
+        localStorage.setItem("__token", db_token?.token);
         dispatch(loginSuccess(user));
       }
    } catch (error) {
