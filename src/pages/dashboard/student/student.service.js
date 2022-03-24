@@ -21,3 +21,12 @@ export async function createStudent(payload) {
 	};
 	return axiosClient.post(url, newClub);
 }
+export async function deactiveStudent(payload) {
+	const url = `/students/${payload}`;
+	return axiosClient.delete(url);
+}
+
+export async function activeStudent(payload) {
+	const url = `/students/${payload.id}/recover`;
+	return axiosClient.put(url, payload);
+}

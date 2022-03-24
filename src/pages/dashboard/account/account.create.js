@@ -39,14 +39,9 @@ const ClubAccountCreate = () => {
 		getList();
 	}, []);
 	const onFinish = async (values) => {
-		values["EstablishedDate"] = moment(
-			values["EstablishedDate"],
-			formatDate
-		).format(formatDateYearFirst);
-		values["UploadedLogo"] = "";
 		let res = await createClubAdmin(values);
 		if (res != null) {
-			success("Add success");
+			success("Create success");
 		}
 	};
 
@@ -80,7 +75,7 @@ const ClubAccountCreate = () => {
 									rules={[
 										{
 											required: true,
-											message: "Event name must be entered!"
+											message: "Username must be entered!"
 										}
 									]}
 								>
@@ -92,7 +87,7 @@ const ClubAccountCreate = () => {
 									rules={[
 										{
 											required: true,
-											message: "Event name must be entered!"
+											message: "Name must be entered!"
 										}
 									]}
 								>

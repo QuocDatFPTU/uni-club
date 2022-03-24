@@ -1,5 +1,16 @@
 import { EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Form, Input, Layout, PageHeader, Row } from "antd";
+import {
+	Button,
+	Card,
+	Col,
+	Form,
+	Input,
+	Layout,
+	Modal,
+	PageHeader,
+	Row,
+	Switch
+} from "antd";
 import { pickBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -7,7 +18,11 @@ import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
 import { defaultPage } from "../../../util/constant";
 import StudentEdit from "./student.edit";
-import { getStudentList } from "./student.service";
+import {
+	activeStudent,
+	deactiveStudent,
+	getStudentList
+} from "./student.service";
 
 const defaultSort = {
 	"is-ascending": "true",
@@ -25,6 +40,27 @@ const StudentList = () => {
 	const [totalItem, setTotalItem] = useState();
 	const [sortedInfo] = useState(defaultSort);
 	const [form] = Form.useForm();
+	const [status, setStatus] = useState(null);
+
+	const [id, setID] = useState();
+	const [isActive, setIsActive] = useState(false);
+	const [isDeactive, setIsDeactive] = useState(false);
+	const onCancel = () => {
+		setIsActive(false);
+		setIsDeactive(false);
+	};
+	const deactive = async () => {
+		if (id != null) {
+			await deactiveStudent(id);
+			setIsDeactive(false);
+		}
+	};
+	const active = async () => {
+		if (id != null) {
+			await activeStudent({ id });
+			setIsActive(false);
+		}
+	};
 
 	const fetchStudent = (params, sortedInfo) => {
 		setLoading(true);
@@ -60,6 +96,30 @@ const StudentList = () => {
 			dataIndex: "dep-name",
 			key: "dep-name",
 			width: "12%"
+		},
+		{
+			title: "Status",
+			dataIndex: "is-deleted",
+			align: "center",
+			width: "8%",
+			fixed: "right",
+			render: (text, record) => (
+				<div style={{ display: "flex", justifyContent: "space-around" }}>
+					<Switch
+						onChange={(e) => {
+							setID(record.id);
+							if (e) {
+								setIsActive(true);
+							} else {
+								setIsDeactive(true);
+							}
+						}}
+						checkedChildren="Active"
+						unCheckedChildren="Inactive"
+						checked={!record["is-deleted"]}
+					/>
+				</div>
+			)
 		},
 		{
 			title: "Action",
@@ -197,6 +257,28 @@ const StudentList = () => {
 				isEditModal={isEditModal}
 				setIsEditModal={setIsEditModal}
 			/>
+			// Deactive modal
+			<Modal
+				title="Confirm"
+				visible={isDeactive}
+				onOk={deactive}
+				onCancel={onCancel}
+				okText="Deactive"
+				cancelText="Cancel"
+			>
+				<p>Do you want to deactive this student?</p>
+			</Modal>
+			// Active modal
+			<Modal
+				title="Confirm"
+				visible={isActive}
+				onOk={active}
+				onCancel={onCancel}
+				okText="Active"
+				cancelText="Cancel"
+			>
+				<p>Do you want to active this student?</p>
+			</Modal>
 		</Layout>
 	);
 };

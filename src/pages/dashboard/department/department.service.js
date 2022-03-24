@@ -23,3 +23,13 @@ export async function createDepartment(payload) {
 	};
 	return axiosClient.post(url, newClub);
 }
+
+export async function deactiveDepa(payload) {
+	const url = `/departments/${payload}`;
+	return axiosClient.delete(url);
+}
+
+export async function activeDepa(payload) {
+	const url = `/departments/${payload.id}/recover`;
+	return axiosClient.put(url, payload);
+}
