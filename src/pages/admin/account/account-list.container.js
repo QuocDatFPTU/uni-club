@@ -1,5 +1,17 @@
 import { EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Form, Input, Layout, PageHeader, Row } from "antd";
+import {
+	Button,
+	Card,
+	Col,
+	Form,
+	Input,
+	Layout,
+	Modal,
+	PageHeader,
+	Row,
+	Select,
+	Switch
+} from "antd";
 import { pickBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -11,7 +23,11 @@ import {
 	formatDateTime,
 	formatDateTimeFull
 } from "../../../util/constant";
-import { getListAccount } from "./account.service";
+import {
+	getListAccount,
+	deactiveAccount,
+	activeAccount
+} from "./account.service";
 
 const defaultSort = {
 	"is-ascending": "true",
@@ -25,11 +41,39 @@ const AccountList = () => {
 	const [params, setParams] = useState({ ...defaultPage });
 	const [totalItem, setTotalItem] = useState();
 	const [sortedInfo] = useState(defaultSort);
+	const [role, setRole] = useState(null);
+	const [status, setStatus] = useState(null);
 	const [form] = Form.useForm();
 
-	const fetchUni = (params, sortedInfo) => {
+	const [id, setID] = useState();
+	const [isActive, setIsActive] = useState(false);
+	const [isDeactive, setIsDeactive] = useState(false);
+	const onCancel = () => {
+		setIsActive(false);
+		setIsDeactive(false);
+	};
+	const deactive = () => {
+		if (id != null) {
+			deactiveAccount(id);
+			setIsDeactive(false);
+		}
+	};
+	const active = () => {
+		if (id != null) {
+			activeAccount({ id: id });
+			setIsActive(false);
+		}
+	};
+
+	const fetchUni = (params, sortedInfo, role, status) => {
 		setLoading(true);
-		getListAccount({ ...params, ...sortedInfo })
+		let p = { ...params, ...sortedInfo };
+		if (role != null && role != "") {
+			p.role = role;
+		} else if (status != null && status != "") {
+			p["is-deleted"] = status;
+		}
+		getListAccount(p)
 			.then((result) => {
 				setUniList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
@@ -39,14 +83,14 @@ const AccountList = () => {
 	};
 
 	useEffect(() => {
-		fetchUni(params, sortedInfo);
-	}, [params, sortedInfo]);
+		fetchUni(params, sortedInfo, role, status);
+	}, [params, sortedInfo, role, isActive, isDeactive, status]);
 
 	const columns = [
 		{
 			title: "Username",
 			dataIndex: "user-name",
-			width: "12%",
+			width: "8%",
 			ellipsis: true,
 			render: (text, record) => {
 				return (
@@ -63,27 +107,28 @@ const AccountList = () => {
 		{
 			title: "Email",
 			dataIndex: "email",
-			width: "12%"
+			width: "8%"
 		},
 		{
-			title: "Role name",
-			dataIndex: "name",
-			width: "12%"
-		},
-		{
-			title: "Action",
+			title: "Status",
+			dataIndex: "is-deleted",
 			align: "center",
 			width: "8%",
 			fixed: "right",
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
-					<Button
-						type="link"
-						size="small"
-						icon={<EditOutlined />}
-						onClick={() => {
-							navigate(`/admin/edit-account/${record.id}`);
+					<Switch
+						onChange={(e) => {
+							setID(record.id);
+							if (e) {
+								setIsActive(true);
+							} else {
+								setIsDeactive(true);
+							}
 						}}
+						checkedChildren="Active"
+						unCheckedChildren="Inactive"
+						checked={!record["is-deleted"]}
 					/>
 				</div>
 			)
@@ -125,48 +170,91 @@ const AccountList = () => {
 			/>
 			<Layout.Content>
 				<Card size="small" className="cardSearch">
-					<Form
-						form={form}
-						layout="horizontal"
-						className="customFormSearch"
-						onFinish={(value) => {
-							const cleanValue = pickBy(
-								value,
-								(v) => v !== undefined && v !== ""
-							);
-							setParams({
-								...cleanValue,
-								"page-number": 1,
-								"page-size": params["page-size"]
-							});
-						}}
-					>
-						<Row gutter={16}>
-							<Col xxl={{ span: 6 }} md={8} sm={12} xs={24}>
-								<Form.Item name="search-value">
-									<Input placeholder="keyword" allowClear={true} />
-								</Form.Item>
-							</Col>
-							<Col>
-								<Form.Item>
-									<Button
-										type="primary"
-										ghost
-										icon={<SearchOutlined />}
-										htmlType="submit"
+					<Row>
+						<Col span={12}>
+							<Form
+								form={form}
+								layout="horizontal"
+								className="customFormSearch"
+								onFinish={(value) => {
+									const cleanValue = pickBy(
+										value,
+										(v) => v !== undefined && v !== ""
+									);
+									setParams({
+										...cleanValue,
+										"page-number": 1,
+										"page-size": params["page-size"]
+									});
+								}}
+							>
+								<Row gutter={16}>
+									<Col xxl={{ span: 12 }}>
+										<Form.Item name="search-value">
+											<Input placeholder="keyword" allowClear={true} />
+										</Form.Item>
+									</Col>
+									<Col>
+										<Form.Item>
+											<Button
+												type="primary"
+												ghost
+												icon={<SearchOutlined />}
+												htmlType="submit"
+											>
+												{"Search"}
+											</Button>
+										</Form.Item>
+									</Col>
+								</Row>
+							</Form>
+						</Col>
+						<Col span={6}>
+							<Row span={12}>
+								<Form.Item label="Role" name="role">
+									<Select
+										defaultValue=""
+										style={{ width: 180 }}
+										onChange={(e) => {
+											setRole(e);
+										}}
 									>
-										{"Search"}
-									</Button>
+										<Select.Option value="">All</Select.Option>
+										<Select.Option value="SystemAdministrator">
+											System Administrator
+										</Select.Option>
+										<Select.Option value="SchoolAdmin">
+											School Admin
+										</Select.Option>
+										<Select.Option value="ClubAdmin">Club Admin</Select.Option>
+										<Select.Option value="Student">Student</Select.Option>
+									</Select>
 								</Form.Item>
-							</Col>
-						</Row>
-					</Form>
+							</Row>
+						</Col>
+						<Col span={6}>
+							<Row span={12}>
+								<Form.Item label="Status" name="status">
+									<Select
+										defaultValue=""
+										style={{ width: 180 }}
+										onChange={(e) => {
+											setStatus(e);
+										}}
+									>
+										<Select.Option value="">Active</Select.Option>
+										<Select.Option value="true">All</Select.Option>
+									</Select>
+								</Form.Item>
+							</Row>
+						</Col>
+					</Row>
 				</Card>
 				<TableCustom
 					title={() => (
 						<Row>
 							<Col span={12}>
-								<h3> {"University List"}</h3>
+								<h3> {"Account List"}</h3>
 							</Col>
 						</Row>
 					)}
@@ -194,6 +282,28 @@ const AccountList = () => {
 					scroll={{ x: 1200 }}
 				/>
 			</Layout.Content>
+			// Deactive modal
+			<Modal
+				title="Confirm"
+				visible={isDeactive}
+				onOk={deactive}
+				onCancel={onCancel}
+				okText="Deactive"
+				cancelText="Cancel"
+			>
+				<p>Do you want to deactive this user?</p>
+			</Modal>
+			// Active modal
+			<Modal
+				title="Confirm"
+				visible={isActive}
+				onOk={active}
+				onCancel={onCancel}
+				okText="Active"
+				cancelText="Cancel"
+			>
+				<p>Do you want to active this user?</p>
+			</Modal>
 		</Layout>
 	);
 };

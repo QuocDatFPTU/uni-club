@@ -24,7 +24,7 @@ import UniCreate from "./pages/admin/university/university.create";
 import AccountList from "./pages/admin/account/account-list.container";
 import UniAccountCreate from "./pages/admin/account/account.create";
 import UniAccountEdit from "./pages/admin/account/account.edit";
-
+import ClubAccountCreate from "./pages/dashboard/account/account.create";
 const AppWrapper = () => {
 	return (
 		<Provider store={store}>
@@ -51,6 +51,7 @@ const App = () => {
 					<Route path="edit-university/:id" element={<UniEdit />} />
 					<Route path="create-university" element={<UniCreate />} />
 					<Route path="account" element={<AccountList />} />
+
 					<Route path="create-account" element={<UniAccountCreate />} />
 					<Route path="edit-account/:id" element={<UniAccountEdit />} />
 				</Route>
@@ -66,7 +67,8 @@ const App = () => {
 					<Route path="" element={<Welcome />} />
 					<Route path="clubs" element={<ClubList />} />
 					<Route path="departments" element={<DepaList />} />
-					<Route path="account" element={<AccountList />} />
+					<Route path="student" element={<StudentList />} />
+					<Route path="create-account" element={<ClubAccountCreate />} />
 				</Route>
 				<Route
 					path="club"

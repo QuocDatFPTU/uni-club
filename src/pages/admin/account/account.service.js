@@ -1,7 +1,7 @@
 import axiosClient from "../../../util/axiosClient";
 import axiosFormCreate from "../../../util/axiosFormCreate";
 export async function getListAccount(params) {
-	const url = "/users?role=SchoolAdmin";
+	const url = "/users";
 	return axiosClient.get(url, { params });
 }
 
@@ -29,4 +29,14 @@ export async function createSchoolAdmin(payload) {
 		formData.append(key, val);
 	}
 	return axiosFormCreate.post(url, formData);
+}
+
+export async function deactiveAccount(payload) {
+	const url = `/users/${payload}`;
+	return axiosClient.delete(url);
+}
+
+export async function activeAccount(payload) {
+	const url = `/users/${payload.id}/recover`;
+	return axiosClient.put(url, payload);
 }
