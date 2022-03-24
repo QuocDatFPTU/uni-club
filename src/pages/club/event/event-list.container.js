@@ -1,5 +1,16 @@
 import { EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Form, Input, Layout, PageHeader, Row } from "antd";
+import {
+	Button,
+	Card,
+	Col,
+	Form,
+	Input,
+	Layout,
+	Modal,
+	PageHeader,
+	Row,
+	Switch
+} from "antd";
 import { pickBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -11,7 +22,7 @@ import {
 	formatDateTime,
 	formatDateTimeFull
 } from "../../../util/constant";
-import { getEventList } from "./event.service";
+import { activeEvent, deactiveEvent, getEventList } from "./event.service";
 
 const defaultSort = {
 	"is-ascending": "true",
@@ -26,10 +37,31 @@ const EventList = () => {
 	const [totalItem, setTotalItem] = useState();
 	const [sortedInfo] = useState(defaultSort);
 	const [form] = Form.useForm();
+	const [status, setStatus] = useState(null);
+
+	const [id, setID] = useState();
+	const [isActive, setIsActive] = useState(false);
+	const [isDeactive, setIsDeactive] = useState(false);
+	const onCancel = () => {
+		setIsActive(false);
+		setIsDeactive(false);
+	};
+	const deactive = () => {
+		if (id != null) {
+			deactiveEvent(id);
+			setIsDeactive(false);
+		}
+	};
+	const active = () => {
+		if (id != null) {
+			activeEvent({ id: id });
+			setIsActive(false);
+		}
+	};
 
 	const fetchEvent = (params, sortedInfo) => {
 		setLoading(true);
-		getEventList({ "uni-id": 1, ...params, ...sortedInfo })
+		getEventList({ ...params, ...sortedInfo })
 			.then((result) => {
 				setEventList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
@@ -47,19 +79,8 @@ const EventList = () => {
 			title: "Event name",
 			dataIndex: "event-name",
 			key: "event-name",
-			width: "20%",
-			ellipsis: true,
-			render: (text, record) => {
-				return (
-					<Button
-						size="small"
-						type="link"
-						onClick={() => navigate(`${record.id}`)}
-					>
-						{text}
-					</Button>
-				);
-			}
+			width: "14%",
+			ellipsis: true
 		},
 		{
 			title: "Start date",
@@ -83,7 +104,7 @@ const EventList = () => {
 			title: "Location",
 			dataIndex: "location",
 			key: "location",
-			width: "12%",
+			width: "10%",
 			render: (value) => {
 				if (value === null) {
 					return "Empty";
@@ -93,10 +114,28 @@ const EventList = () => {
 			}
 		},
 		{
-			title: "Description",
-			dataIndex: "description",
-			key: "description",
-			width: "12%"
+			title: "Status",
+			dataIndex: "is-deleted",
+			align: "center",
+			width: "5%",
+			fixed: "right",
+			render: (text, record) => (
+				<div style={{ display: "flex", justifyContent: "space-around" }}>
+					<Switch
+						onChange={(e) => {
+							setID(record.id);
+							if (e) {
+								setIsActive(true);
+							} else {
+								setIsDeactive(true);
+							}
+						}}
+						checkedChildren="Active"
+						unCheckedChildren="Inactive"
+						checked={!record["is-deleted"]}
+					/>
+				</div>
+			)
 		},
 		{
 			title: "Action",
@@ -146,7 +185,7 @@ const EventList = () => {
 		<Layout className="layoutContent">
 			<PageHeader
 				ghost={false}
-				title="Club"
+				title="Event"
 				extra={extraButton}
 				breadcrumb={routes}
 				className="customPageHeader"
@@ -222,6 +261,28 @@ const EventList = () => {
 					scroll={{ x: 1200 }}
 				/>
 			</Layout.Content>
+			// Deactive modal
+			<Modal
+				title="Confirm"
+				visible={isDeactive}
+				onOk={deactive}
+				onCancel={onCancel}
+				okText="Deactive"
+				cancelText="Cancel"
+			>
+				<p>Do you want to deactive this event?</p>
+			</Modal>
+			// Active modal
+			<Modal
+				title="Confirm"
+				visible={isActive}
+				onOk={active}
+				onCancel={onCancel}
+				okText="Active"
+				cancelText="Cancel"
+			>
+				<p>Do you want to active this event?</p>
+			</Modal>
 		</Layout>
 	);
 };

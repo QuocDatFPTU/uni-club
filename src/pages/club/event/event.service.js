@@ -25,3 +25,13 @@ export async function updateEvent(payload, id) {
 	};
 	return axiosClient.put(url, newEvent);
 }
+
+export async function deactiveEvent(payload) {
+	const url = `/users/${payload}`;
+	return axiosClient.delete(url);
+}
+
+export async function activeEvent(payload) {
+	const url = `/users/${payload.id}/recover`;
+	return axiosClient.put(url, payload);
+}

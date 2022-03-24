@@ -28,3 +28,13 @@ export async function createClub(payload) {
 	};
 	return axiosClient.post(url, newClub);
 }
+
+export async function deactiveClub(payload) {
+	const url = `/clubs/${payload}`;
+	return axiosClient.delete(url);
+}
+
+export async function activeClub(payload) {
+	const url = `/clubs/${payload.id}/recover`;
+	return axiosClient.put(url, payload);
+}

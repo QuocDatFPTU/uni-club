@@ -9,6 +9,7 @@ import {
 	Modal,
 	PageHeader,
 	Row,
+	Select,
 	Switch
 } from "antd";
 import { pickBy } from "lodash";
@@ -16,25 +17,22 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
-import { defaultPage } from "../../../util/constant";
-import StudentEdit from "./student.edit";
 import {
-	activeStudent,
-	deactiveStudent,
-	getStudentList
-} from "./student.service";
+	defaultPage,
+	formatDate,
+	formatDateTime,
+	formatDateTimeFull
+} from "../../../util/constant";
+import { activeTask, deactiveTask, getTaskList } from "./task.service";
 
 const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const StudentList = () => {
+const TaskList = () => {
 	const navigate = useNavigate();
-	const [studentList, setStudentList] = useState([]);
-	const [student, setStudent] = useState();
-
+	const [eventList, setEventList] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [isEditModal, setIsEditModal] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
 	const [totalItem, setTotalItem] = useState();
@@ -49,24 +47,28 @@ const StudentList = () => {
 		setIsActive(false);
 		setIsDeactive(false);
 	};
-	const deactive = async () => {
+	const deactive = () => {
 		if (id != null) {
-			await deactiveStudent(id);
+			deactiveTask(id);
 			setIsDeactive(false);
 		}
 	};
-	const active = async () => {
+	const active = () => {
 		if (id != null) {
-			await activeStudent({ id });
+			activeTask({ id: id });
 			setIsActive(false);
 		}
 	};
 
-	const fetchStudent = (params, sortedInfo) => {
+	const fetchEvent = (params, sortedInfo, status) => {
 		setLoading(true);
-		getStudentList({ "uni-id": 1, ...params, ...sortedInfo })
+		let p = { ...params, ...sortedInfo };
+		if (status != null && status != "") {
+			p["is-deleted"] = status;
+		}
+		getTaskList(p)
 			.then((result) => {
-				setStudentList([...result.data.items]);
+				setEventList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
 				setLoading(false);
 			})
@@ -74,34 +76,31 @@ const StudentList = () => {
 	};
 
 	useEffect(() => {
-		fetchStudent(params, sortedInfo);
-	}, [params, sortedInfo]);
+		fetchEvent(params, sortedInfo, status);
+	}, [params, sortedInfo, status, isActive, isDeactive]);
 
 	const columns = [
 		{
-			title: "Name",
-			dataIndex: "name",
-			key: "name",
-			width: "12%"
+			title: "Title",
+			dataIndex: "title",
+			key: "title",
+			width: "14%",
+			ellipsis: true
 		},
 		{
-			title: "Gender",
-			dataIndex: "gender",
-			key: "gender",
+			title: "Creation time",
+			dataIndex: "creation-time",
+			key: "start-date",
 			width: "12%",
-			render: (gender) => <>{gender ? "Male" : "Female"}</>
-		},
-		{
-			title: "Department",
-			dataIndex: "dep-name",
-			key: "dep-name",
-			width: "12%"
+			render: (time) => {
+				return moment(time, formatDateTimeFull).format(formatDate);
+			}
 		},
 		{
 			title: "Status",
 			dataIndex: "is-deleted",
 			align: "center",
-			width: "8%",
+			width: "5%",
 			fixed: "right",
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
@@ -129,14 +128,12 @@ const StudentList = () => {
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
 					<Button
-						onClick={() => {
-							const student = studentList.find((stu) => stu.id === record.id);
-							setStudent(student);
-							setIsEditModal(true);
-						}}
 						type="link"
 						size="small"
 						icon={<EditOutlined />}
+						onClick={() => {
+							navigate(`/club/edit-event/${record.id}`);
+						}}
 					/>
 				</div>
 			)
@@ -148,8 +145,7 @@ const StudentList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				setStudent();
-				setIsEditModal(true);
+				navigate("/club/create-event");
 			}}
 		>
 			{"Create"}
@@ -159,12 +155,12 @@ const StudentList = () => {
 
 	const routes = [
 		{
-			path: "index",
-			breadcrumbName: "Dashboard"
+			path: "/dashboard",
+			breadcrumbName: "Home"
 		},
 		{
-			path: "first",
-			breadcrumbName: "Department"
+			path: "/dashboard/club",
+			breadcrumbName: "Club"
 		}
 	];
 
@@ -172,55 +168,75 @@ const StudentList = () => {
 		<Layout className="layoutContent">
 			<PageHeader
 				ghost={false}
-				title="Student"
+				title="Task"
 				extra={extraButton}
 				breadcrumb={routes}
 				className="customPageHeader"
 			/>
 			<Layout.Content>
 				<Card size="small" className="cardSearch">
-					<Form
-						form={form}
-						layout="horizontal"
-						className="customFormSearch"
-						onFinish={(value) => {
-							const cleanValue = pickBy(
-								value,
-								(v) => v !== undefined && v !== ""
-							);
-							setParams({
-								...cleanValue,
-								"page-number": 1,
-								"page-size": params["page-size"]
-							});
-						}}
-					>
-						<Row gutter={16}>
-							<Col xxl={{ span: 6 }} md={8} sm={12} xs={24}>
-								<Form.Item name="search-value">
-									<Input placeholder="keyword" allowClear={true} />
-								</Form.Item>
-							</Col>
-							<Col>
-								<Form.Item>
-									<Button
-										type="primary"
-										ghost
-										icon={<SearchOutlined />}
-										htmlType="submit"
+					<Row>
+						<Col span={12}>
+							<Form
+								form={form}
+								layout="horizontal"
+								className="customFormSearch"
+								onFinish={(value) => {
+									const cleanValue = pickBy(
+										value,
+										(v) => v !== undefined && v !== ""
+									);
+									setParams({
+										...cleanValue,
+										"page-number": 1,
+										"page-size": params["page-size"]
+									});
+								}}
+							>
+								<Row gutter={16}>
+									<Col xxl={{ span: 12 }}>
+										<Form.Item name="search-value">
+											<Input placeholder="keyword" allowClear={true} />
+										</Form.Item>
+									</Col>
+									<Col>
+										<Form.Item>
+											<Button
+												type="primary"
+												ghost
+												icon={<SearchOutlined />}
+												htmlType="submit"
+											>
+												{"Search"}
+											</Button>
+										</Form.Item>
+									</Col>
+								</Row>
+							</Form>
+						</Col>
+						<Col span={6}>
+							<Row span={12}>
+								<Form.Item label="Status" name="status">
+									<Select
+										defaultValue=""
+										style={{ width: 180 }}
+										onChange={(e) => {
+											setStatus(e);
+										}}
 									>
-										{"Search"}
-									</Button>
+										<Select.Option value="">Active</Select.Option>
+										<Select.Option value="true">All</Select.Option>
+									</Select>
 								</Form.Item>
-							</Col>
-						</Row>
-					</Form>
+							</Row>
+						</Col>
+					</Row>
 				</Card>
 				<TableCustom
 					title={() => (
 						<Row>
 							<Col span={12}>
-								<h3> {"Event List"}</h3>
+								<h3> {"Task List"}</h3>
 							</Col>
 						</Row>
 					)}
@@ -228,7 +244,7 @@ const StudentList = () => {
 					loading={loading}
 					bordered
 					columns={columns}
-					dataSource={studentList}
+					dataSource={eventList}
 					onChange={(pagination, filters, sorter) => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 						if (pagination.pageSize !== params["page-size"]) {
@@ -248,15 +264,6 @@ const StudentList = () => {
 					scroll={{ x: 1200 }}
 				/>
 			</Layout.Content>
-			<StudentEdit
-				item={student}
-				onCallback={(value) => {
-					setParams({ ...defaultPage });
-					setIsEditModal(false);
-				}}
-				isEditModal={isEditModal}
-				setIsEditModal={setIsEditModal}
-			/>
 			// Deactive modal
 			<Modal
 				title="Confirm"
@@ -266,7 +273,7 @@ const StudentList = () => {
 				okText="Deactive"
 				cancelText="Cancel"
 			>
-				<p>Do you want to deactive this student?</p>
+				<p>Do you want to deactive this event?</p>
 			</Modal>
 			// Active modal
 			<Modal
@@ -277,10 +284,10 @@ const StudentList = () => {
 				okText="Active"
 				cancelText="Cancel"
 			>
-				<p>Do you want to active this student?</p>
+				<p>Do you want to active this event?</p>
 			</Modal>
 		</Layout>
 	);
 };
 
-export default StudentList;
+export default TaskList;

@@ -42,8 +42,8 @@ const AccountList = () => {
 	const [totalItem, setTotalItem] = useState();
 	const [sortedInfo] = useState(defaultSort);
 	const [role, setRole] = useState(null);
-	const [status, setStatus] = useState(null);
 	const [form] = Form.useForm();
+	const [status, setStatus] = useState(null);
 
 	const [id, setID] = useState();
 	const [isActive, setIsActive] = useState(false);
@@ -91,18 +91,7 @@ const AccountList = () => {
 			title: "Username",
 			dataIndex: "user-name",
 			width: "8%",
-			ellipsis: true,
-			render: (text, record) => {
-				return (
-					<Button
-						size="small"
-						type="link"
-						onClick={() => navigate(`${record.id}`)}
-					>
-						{text}
-					</Button>
-				);
-			}
+			ellipsis: true
 		},
 		{
 			title: "Email",

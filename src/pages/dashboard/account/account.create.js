@@ -39,14 +39,9 @@ const ClubAccountCreate = () => {
 		getList();
 	}, []);
 	const onFinish = async (values) => {
-		values["EstablishedDate"] = moment(
-			values["EstablishedDate"],
-			formatDate
-		).format(formatDateYearFirst);
-		values["UploadedLogo"] = "";
 		let res = await createClubAdmin(values);
 		if (res != null) {
-			success("Add success");
+			success("Create success");
 		}
 	};
 
@@ -62,7 +57,7 @@ const ClubAccountCreate = () => {
 					<Form onFinish={onFinish} layout="vertical">
 						<Row>
 							<Col offset={4} span={5}>
-								<Form.Item name="UploadedLogo" label="University Image">
+								<Form.Item name="UploadedLogo" label="Account Image">
 									<Upload
 										accept="image/*"
 										maxCount={1}
@@ -80,7 +75,7 @@ const ClubAccountCreate = () => {
 									rules={[
 										{
 											required: true,
-											message: "Event name must be entered!"
+											message: "Username must be entered!"
 										}
 									]}
 								>
@@ -92,7 +87,7 @@ const ClubAccountCreate = () => {
 									rules={[
 										{
 											required: true,
-											message: "Event name must be entered!"
+											message: "Name must be entered!"
 										}
 									]}
 								>
@@ -123,7 +118,7 @@ const ClubAccountCreate = () => {
 									<Input type="password" />
 								</Form.Item>
 								<Form.Item
-									name="ClubId"
+									name="club-id"
 									label="Club"
 									rules={[
 										{
@@ -133,8 +128,12 @@ const ClubAccountCreate = () => {
 									]}
 								>
 									<Select>
-										{clubList.map((uni) => {
-											return <Option value={uni.id}>{uni["club-name"]}</Option>;
+										{clubList.map((club) => {
+											return (
+												<Option value={club.id}>
+													{club["club-name"]} ({club["short-name"]})
+												</Option>
+											);
 										})}
 									</Select>
 								</Form.Item>

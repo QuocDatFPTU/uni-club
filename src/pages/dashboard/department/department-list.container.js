@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableCustom from "../../../components/TableCustom";
 import { defaultPage } from "../../../util/constant";
-import { getDepaList } from "./department.service";
+import { activeDepa, deactiveDepa, getDepaList } from "./department.service";
 import DepaEdit from "./department.edit";
 const defaultSort = {
 	"is-ascending": "true",
@@ -24,6 +24,27 @@ const DepaList = () => {
 	const [totalItem, setTotalItem] = useState();
 	const [sortedInfo] = useState(defaultSort);
 	const [form] = Form.useForm();
+	const [status, setStatus] = useState(null);
+
+	const [id, setID] = useState();
+	const [isActive, setIsActive] = useState(false);
+	const [isDeactive, setIsDeactive] = useState(false);
+	const onCancel = () => {
+		setIsActive(false);
+		setIsDeactive(false);
+	};
+	const deactive = async () => {
+		if (id != null) {
+			await deactiveDepa(id);
+			setIsDeactive(false);
+		}
+	};
+	const active = async () => {
+		if (id != null) {
+			await activeDepa({ id });
+			setIsActive(false);
+		}
+	};
 
 	const fetchDepartment = (params, sortedInfo) => {
 		setLoading(true);

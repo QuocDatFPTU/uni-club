@@ -25,6 +25,9 @@ import AccountList from "./pages/admin/account/account-list.container";
 import UniAccountCreate from "./pages/admin/account/account.create";
 import UniAccountEdit from "./pages/admin/account/account.edit";
 import ClubAccountCreate from "./pages/dashboard/account/account.create";
+import PostList from "./pages/club/post/post-list.container";
+import TaskList from "./pages/club/task/task-list.container";
+import PostCreate from "./pages/club/post/post-list.create";
 const AppWrapper = () => {
 	return (
 		<Provider store={store}>
@@ -79,8 +82,11 @@ const App = () => {
 					<Route path="" element={<Welcome />} />
 					<Route path="member" element={<MemberList />} />
 					<Route path="event" element={<EventList />} />
+					<Route path="post" element={<PostList />} />
+					<Route path="task" element={<TaskList />} />
 					<Route path="create-event" element={<EventCreate />} />
 					<Route path="edit-event/:id" element={<EventEdit />} />
+					<Route path="create-post" element={<PostCreate />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>
