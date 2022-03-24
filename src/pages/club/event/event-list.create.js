@@ -163,7 +163,7 @@ const EventCreate = () => {
 										unCheckedChildren="Private"
 									/>
 								</Form.Item>
-								<Form.Item name="is-private">
+								<Form.Item>
 									<Button type="primary" htmlType="submit">
 										Create
 									</Button>

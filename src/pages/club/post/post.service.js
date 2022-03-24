@@ -1,16 +1,16 @@
 import axiosClient from "../../../util/axiosClient";
 export const getPostList = async (params) => {
-	const url = "/club-tasks";
+	const url = "/posts";
 	return axiosClient.get(url, { params });
 };
 
 export async function getPostByID(id) {
-	const url = `/club-tasks/${id}`;
+	const url = `/posts/${id}`;
 	return axiosClient.get(url);
 }
 
 export async function createPost(payload) {
-	const url = `/club-tasks`;
+	const url = `/posts`;
 	const newEvent = {
 		...payload
 	};
@@ -18,20 +18,19 @@ export async function createPost(payload) {
 }
 
 export async function updatePost(payload, id) {
-	const url = `/club-tasks/${id}`;
+	const url = `/posts/${id}`;
 	const newEvent = {
-		...payload,
-		id: id
+		...payload
 	};
 	return axiosClient.put(url, newEvent);
 }
 
 export async function deactivePost(payload) {
-	const url = `/club-tasks/${payload}`;
+	const url = `/posts/${payload}`;
 	return axiosClient.delete(url);
 }
 
 export async function activePost(payload) {
-	const url = `/club-tasks/${payload.id}/recover`;
+	const url = `/posts/${payload.id}/recover`;
 	return axiosClient.put(url, payload);
 }

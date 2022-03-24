@@ -303,7 +303,6 @@ const ClubList = () => {
 					setIsEditModal={setIsEditModal}
 				/>
 			</Layout.Content>
-			// Deactive modal
 			<Modal
 				title="Confirm"
 				visible={isDeactive}
@@ -314,7 +313,6 @@ const ClubList = () => {
 			>
 				<p>Do you want to deactive this university?</p>
 			</Modal>
-			// Active modal
 			<Modal
 				title="Confirm"
 				visible={isActive}

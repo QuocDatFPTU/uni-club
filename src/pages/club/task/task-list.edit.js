@@ -11,46 +11,60 @@ import {
 	Button,
 	InputNumber,
 	Modal,
-	Select
+	Select,
+	Spin
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Content } from "antd/lib/layout/layout";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { formatDate, formatDateTimeFull } from "../../../util/constant";
 import { getEventList } from "../event/event.service";
-import { createPost } from "./post.service";
+import { getTaskByID, updateTask } from "./task.service";
 
 const success = () => {
 	Modal.success({
-		content: "Create success",
+		content: "Success",
 		onOk() {
 			window.history.back();
 		}
 	});
 };
 
-const PostCreate = () => {
+const TaskEdit = () => {
 	const [eventList, setEventList] = useState([]);
-
+	const { id } = useParams();
+	const [task, setTask] = useState();
 	const fetchEventList = async () => {
 		let res = await getEventList();
-		console.log(res.data.items);
 		setEventList(res.data.items);
+	};
+
+	const fetchTask = async () => {
+		let res = await getTaskByID(id);
+		console.log(res.data);
+		setTask(res.data);
 	};
 
 	useEffect(() => {
 		fetchEventList();
+		fetchTask();
 	}, []);
 
 	const onFinish = async (values) => {
-		values["person-id"] = localStorage.getItem("id");
-		let res = await createPost(values);
+		values["end-date"] =
+			moment(values["end-date"], formatDate).format(formatDateTimeFull) + "Z";
+		values["start-date"] =
+			moment(values["start-date"], formatDate).format(formatDateTimeFull) + "Z";
+		let res = await updateTask(values, id);
 		if (res != null) {
 			success();
 		}
 	};
-	return (
+	return task == null ? (
+		<Spin />
+	) : (
 		<Layout className="layoutContent">
 			<PageHeader
 				onBack={() => window.history.back()}
@@ -60,36 +74,56 @@ const PostCreate = () => {
 			/>
 			<Content style={{ backgroundColor: "white" }}>
 				<div className="site-layout-content">
-					<Form onFinish={onFinish} layout="vertical">
+					<Form
+						initialValues={{
+							...task,
+							"start-date": moment(task["start-date"]),
+							"end-date": moment(task["start-date"])
+						}}
+						onFinish={onFinish}
+						layout="vertical"
+					>
 						<Row>
 							<Col offset={4} span={8}>
 								<Form.Item
-									name="title"
-									label="Title"
+									name="task-name"
+									label="Task name"
 									rules={[
 										{
 											required: true,
-											message: "Title must be entered!"
+											message: "Task name must be entered!"
 										}
 									]}
 								>
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="short-description"
-									label="Short description"
+									name="start-date"
+									label="Start Date"
 									rules={[
 										{
 											required: true,
-											message: "Description must be entered!"
+											message: "Start date must be entered!"
 										}
 									]}
 								>
-									<Input />
+									<DatePicker />
 								</Form.Item>
 								<Form.Item
-									name="content"
-									label="Content"
+									name="end-date"
+									label="End Date"
+									rules={[
+										{
+											required: true,
+											message: "End date must be entered!"
+										}
+									]}
+								>
+									<DatePicker />
+								</Form.Item>
+								<Form.Item
+									name="description"
+									label="Description"
 									rules={[
 										{
 											required: true,
@@ -110,10 +144,10 @@ const PostCreate = () => {
 									]}
 								>
 									<Select>
-										<Select.Option value="Unavalable">
-											Unavailable
-										</Select.Option>
-										<Select.Option value="Available">Available</Select.Option>
+										<Select.Option value="Undone">Undone</Select.Option>
+										<Select.Option value="NotStarted">NotStarted</Select.Option>
+										<Select.Option value="InProgress">InProgress</Select.Option>
+										<Select.Option value="Done">Done</Select.Option>
 									</Select>
 								</Form.Item>
 								<Form.Item
@@ -138,7 +172,7 @@ const PostCreate = () => {
 								</Form.Item>
 								<Form.Item name="is-private">
 									<Button type="primary" htmlType="submit">
-										Create
+										Edit
 									</Button>
 								</Form.Item>
 							</Col>
@@ -153,4 +187,4 @@ const PostCreate = () => {
 	);
 };
 
-export default PostCreate;
+export default TaskEdit;

@@ -270,7 +270,6 @@ const UniList = () => {
 					scroll={{ x: 1200 }}
 				/>
 			</Layout.Content>
-			// Deactive modal
 			<Modal
 				title="Confirm"
 				visible={isDeactive}
@@ -281,7 +280,6 @@ const UniList = () => {
 			>
 				<p>Do you want to deactive this university?</p>
 			</Modal>
-			// Active modal
 			<Modal
 				title="Confirm"
 				visible={isActive}

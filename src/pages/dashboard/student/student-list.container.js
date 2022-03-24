@@ -257,7 +257,6 @@ const StudentList = () => {
 				isEditModal={isEditModal}
 				setIsEditModal={setIsEditModal}
 			/>
-			// Deactive modal
 			<Modal
 				title="Confirm"
 				visible={isDeactive}
@@ -268,7 +267,6 @@ const StudentList = () => {
 			>
 				<p>Do you want to deactive this student?</p>
 			</Modal>
-			// Active modal
 			<Modal
 				title="Confirm"
 				visible={isActive}

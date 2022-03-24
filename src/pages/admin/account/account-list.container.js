@@ -271,7 +271,6 @@ const AccountList = () => {
 					scroll={{ x: 1200 }}
 				/>
 			</Layout.Content>
-			// Deactive modal
 			<Modal
 				title="Confirm"
 				visible={isDeactive}
@@ -282,7 +281,6 @@ const AccountList = () => {
 			>
 				<p>Do you want to deactive this user?</p>
 			</Modal>
-			// Active modal
 			<Modal
 				title="Confirm"
 				visible={isActive}

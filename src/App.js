@@ -28,6 +28,10 @@ import ClubAccountCreate from "./pages/dashboard/account/account.create";
 import PostList from "./pages/club/post/post-list.container";
 import TaskList from "./pages/club/task/task-list.container";
 import PostCreate from "./pages/club/post/post-list.create";
+import PostEdit from "./pages/club/post/post-list.edit";
+import PostTask from "./pages/club/task/task-list.create";
+import TaskCreate from "./pages/club/task/task-list.create";
+import TaskEdit from "./pages/club/task/task-list.edit";
 const AppWrapper = () => {
 	return (
 		<Provider store={store}>
@@ -87,6 +91,9 @@ const App = () => {
 					<Route path="create-event" element={<EventCreate />} />
 					<Route path="edit-event/:id" element={<EventEdit />} />
 					<Route path="create-post" element={<PostCreate />} />
+					<Route path="edit-post/:id" element={<PostEdit />} />
+					<Route path="create-task" element={<TaskCreate />} />
+					<Route path="edit-task/:id" element={<TaskEdit />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>

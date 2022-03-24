@@ -49,6 +49,7 @@ export const loginInitiate = (email, password) => async (dispatch) => {
 			localStorage.setItem("uniID", user.university);
 			localStorage.setItem("email", user.email);
 			localStorage.setItem("name", user.username);
+			localStorage.setItem("id", user.id);
 			dispatch(loginSuccess(user));
 		}
 	} catch (error) {

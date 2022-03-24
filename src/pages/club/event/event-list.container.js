@@ -261,7 +261,6 @@ const EventList = () => {
 					scroll={{ x: 1200 }}
 				/>
 			</Layout.Content>
-			// Deactive modal
 			<Modal
 				title="Confirm"
 				visible={isDeactive}
@@ -272,7 +271,6 @@ const EventList = () => {
 			>
 				<p>Do you want to deactive this event?</p>
 			</Modal>
-			// Active modal
 			<Modal
 				title="Confirm"
 				visible={isActive}
