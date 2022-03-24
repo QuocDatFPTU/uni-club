@@ -81,15 +81,15 @@ const TaskList = () => {
 
 	const columns = [
 		{
-			title: "Title",
-			dataIndex: "title",
-			key: "title",
+			title: "Name",
+			dataIndex: "task-name",
+			key: "task-name",
 			width: "14%",
 			ellipsis: true
 		},
 		{
-			title: "Creation time",
-			dataIndex: "creation-time",
+			title: "Start time",
+			dataIndex: "start-date",
 			key: "start-date",
 			width: "12%",
 			render: (time) => {
@@ -97,7 +97,33 @@ const TaskList = () => {
 			}
 		},
 		{
+			title: "End time",
+			dataIndex: "end-date",
+			key: "end-date",
+			width: "12%",
+			render: (time) => {
+				return moment(time, formatDateTimeFull).format(formatDate);
+			}
+		},
+		{
 			title: "Status",
+			dataIndex: "status",
+			key: "status",
+			width: "12%",
+			render: (text) => {
+				if (text == "Undone") {
+					return "Undone";
+				} else if (text == "NotStarted") {
+					return "Not Started";
+				} else if (text == "InProgress") {
+					return "In Progress";
+				} else if (text == "Done") {
+					return "Done";
+				}
+			}
+		},
+		{
+			title: "",
 			dataIndex: "is-deleted",
 			align: "center",
 			width: "5%",
@@ -132,7 +158,7 @@ const TaskList = () => {
 						size="small"
 						icon={<EditOutlined />}
 						onClick={() => {
-							navigate(`/club/edit-event/${record.id}`);
+							navigate(`/club/edit-task/${record.id}`);
 						}}
 					/>
 				</div>
@@ -145,7 +171,7 @@ const TaskList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				navigate("/club/create-event");
+				navigate("/club/create-task");
 			}}
 		>
 			{"Create"}
@@ -224,8 +250,8 @@ const TaskList = () => {
 											setStatus(e);
 										}}
 									>
-										<Select.Option value="">Active</Select.Option>
-										<Select.Option value="true">All</Select.Option>
+										<Select.Option value="">All</Select.Option>
+										<Select.Option value="true">Active</Select.Option>
 									</Select>
 								</Form.Item>
 							</Row>

@@ -9,7 +9,7 @@ export async function getTaskByID(id) {
 	return axiosClient.get(url);
 }
 
-export async function createPost(payload) {
+export async function createTask(payload) {
 	const url = `/club-tasks`;
 	const newEvent = {
 		...payload
@@ -32,6 +32,6 @@ export async function deactiveTask(payload) {
 }
 
 export async function activeTask(payload) {
-	const url = `/posts/${payload.id}/recover`;
+	const url = `/club-tasks/${payload.id}/recover`;
 	return axiosClient.put(url, payload);
 }

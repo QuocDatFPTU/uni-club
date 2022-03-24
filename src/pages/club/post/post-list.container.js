@@ -132,7 +132,7 @@ const PostList = () => {
 						size="small"
 						icon={<EditOutlined />}
 						onClick={() => {
-							navigate(`/club/edit-event/${record.id}`);
+							navigate(`/club/edit-post/${record.id}`);
 						}}
 					/>
 				</div>
@@ -264,7 +264,6 @@ const PostList = () => {
 					scroll={{ x: 1200 }}
 				/>
 			</Layout.Content>
-			// Deactive modal
 			<Modal
 				title="Confirm"
 				visible={isDeactive}
@@ -275,7 +274,6 @@ const PostList = () => {
 			>
 				<p>Do you want to deactive this post?</p>
 			</Modal>
-			// Active modal
 			<Modal
 				title="Confirm"
 				visible={isActive}
