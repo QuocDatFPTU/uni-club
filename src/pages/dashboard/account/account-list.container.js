@@ -166,7 +166,7 @@ const AccountList = () => {
 					title={() => (
 						<Row>
 							<Col span={12}>
-								<h3> {"University List"}</h3>
+								<h3> {"Account List"}</h3>
 							</Col>
 						</Row>
 					)}

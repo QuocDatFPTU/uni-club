@@ -75,29 +75,10 @@ const ClubList = () => {
 			width: "12%"
 		},
 		{
-			title: "Description",
-			dataIndex: "description",
-			key: "description",
-			width: "20%"
-		},
-		{
 			title: "Short description",
 			dataIndex: "short-description",
 			key: "short-description",
 			width: "12%"
-		},
-		{
-			title: "Slogan",
-			dataIndex: "slogan",
-			key: "slogan",
-			width: "12%",
-			render: (value) => {
-				if (value === null) {
-					return "Empty";
-				} else {
-					return value;
-				}
-			}
 		},
 		{
 			title: "Established Date",

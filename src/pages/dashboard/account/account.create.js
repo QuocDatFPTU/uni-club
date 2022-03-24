@@ -23,21 +23,20 @@ import {
 	formatDateTimeFull,
 	formatDateYearFirst
 } from "../../../util/constant";
-import { getListUni } from "../university/university.service";
-import { createSchoolAdmin } from "./account.service";
+import { createClubAdmin, getListClub } from "./account.service";
 
 const { Option } = Select;
 
-const UniAccountCreate = () => {
-	const [uniList, setUniList] = useState([]);
+const ClubAccountCreate = () => {
+	const [clubList, setClubList] = useState([]);
 
-	const getUniList = async () => {
-		let res = await getListUni();
-		setUniList(res.data.items);
+	const getList = async () => {
+		let res = await getListClub();
+		setClubList(res.data.items);
 	};
 
 	useEffect(() => {
-		getUniList();
+		getList();
 	}, []);
 	const onFinish = async (values) => {
 		values["EstablishedDate"] = moment(
@@ -45,7 +44,7 @@ const UniAccountCreate = () => {
 			formatDate
 		).format(formatDateYearFirst);
 		values["UploadedLogo"] = "";
-		let res = await createSchoolAdmin(values);
+		let res = await createClubAdmin(values);
 		if (res != null) {
 			success("Add success");
 		}
@@ -54,9 +53,8 @@ const UniAccountCreate = () => {
 	return (
 		<Layout className="layoutContent">
 			<PageHeader
-				onBack={() => window.history.back()}
 				ghost={false}
-				title="Create Event"
+				title="Create Account"
 				className="customPageHeader"
 			/>
 			<Content style={{ backgroundColor: "white" }}>
@@ -125,8 +123,8 @@ const UniAccountCreate = () => {
 									<Input type="password" />
 								</Form.Item>
 								<Form.Item
-									name="UniId"
-									label="University"
+									name="ClubId"
+									label="Club"
 									rules={[
 										{
 											required: true,
@@ -135,8 +133,8 @@ const UniAccountCreate = () => {
 									]}
 								>
 									<Select>
-										{uniList.map((uni) => {
-											return <Option value={uni.id}>{uni["uni-name"]}</Option>;
+										{clubList.map((uni) => {
+											return <Option value={uni.id}>{uni["club-name"]}</Option>;
 										})}
 									</Select>
 								</Form.Item>
@@ -154,4 +152,4 @@ const UniAccountCreate = () => {
 	);
 };
 
-export default UniAccountCreate;
+export default ClubAccountCreate;

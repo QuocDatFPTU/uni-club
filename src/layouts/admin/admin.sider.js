@@ -56,7 +56,7 @@ const AdminSider = () => {
 					icon={<TeamOutlined />}
 					onClick={() => navigate("/admin/account")}
 				>
-					University account
+					Account
 				</Menu.Item>
 			</Menu>
 		</Sider>
