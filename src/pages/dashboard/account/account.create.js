@@ -57,7 +57,7 @@ const ClubAccountCreate = () => {
 					<Form onFinish={onFinish} layout="vertical">
 						<Row>
 							<Col offset={4} span={5}>
-								<Form.Item name="UploadedLogo" label="University Image">
+								<Form.Item name="UploadedLogo" label="Account Image">
 									<Upload
 										accept="image/*"
 										maxCount={1}
@@ -118,7 +118,7 @@ const ClubAccountCreate = () => {
 									<Input type="password" />
 								</Form.Item>
 								<Form.Item
-									name="ClubId"
+									name="club-id"
 									label="Club"
 									rules={[
 										{

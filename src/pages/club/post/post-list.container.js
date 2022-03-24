@@ -23,25 +23,20 @@ import {
 	formatDateTime,
 	formatDateTimeFull
 } from "../../../util/constant";
-import {
-	getListAccount,
-	deactiveAccount,
-	activeAccount
-} from "./account.service";
+import { activePost, deactivePost, getPostList } from "./post.service";
 
 const defaultSort = {
 	"is-ascending": "true",
 	"order-by": "Id"
 };
-const AccountList = () => {
+const PostList = () => {
 	const navigate = useNavigate();
-	const [uniList, setUniList] = useState([]);
+	const [eventList, setEventList] = useState([]);
 	const [loading, setLoading] = useState(false);
 	//Pagination
 	const [params, setParams] = useState({ ...defaultPage });
 	const [totalItem, setTotalItem] = useState();
 	const [sortedInfo] = useState(defaultSort);
-	const [role, setRole] = useState(null);
 	const [form] = Form.useForm();
 	const [status, setStatus] = useState(null);
 
@@ -54,28 +49,26 @@ const AccountList = () => {
 	};
 	const deactive = () => {
 		if (id != null) {
-			deactiveAccount(id);
+			deactivePost(id);
 			setIsDeactive(false);
 		}
 	};
 	const active = () => {
 		if (id != null) {
-			activeAccount({ id: id });
+			activePost({ id: id });
 			setIsActive(false);
 		}
 	};
 
-	const fetchUni = (params, sortedInfo, role, status) => {
+	const fetchEvent = (params, sortedInfo, status) => {
 		setLoading(true);
 		let p = { ...params, ...sortedInfo };
-		if (role != null && role != "") {
-			p.role = role;
-		} else if (status != null && status != "") {
+		if (status != null && status != "") {
 			p["is-deleted"] = status;
 		}
-		getListAccount(p)
+		getPostList(p)
 			.then((result) => {
-				setUniList([...result.data.items]);
+				setEventList([...result.data.items]);
 				setTotalItem(result.data["total-count"]);
 				setLoading(false);
 			})
@@ -83,26 +76,31 @@ const AccountList = () => {
 	};
 
 	useEffect(() => {
-		fetchUni(params, sortedInfo, role, status);
-	}, [params, sortedInfo, role, isActive, isDeactive, status]);
+		fetchEvent(params, sortedInfo, status);
+	}, [params, sortedInfo, status, isActive, isDeactive]);
 
 	const columns = [
 		{
-			title: "Username",
-			dataIndex: "user-name",
-			width: "8%",
+			title: "Title",
+			dataIndex: "title",
+			key: "title",
+			width: "14%",
 			ellipsis: true
 		},
 		{
-			title: "Email",
-			dataIndex: "email",
-			width: "8%"
+			title: "Creation time",
+			dataIndex: "creation-time",
+			key: "start-date",
+			width: "12%",
+			render: (time) => {
+				return moment(time, formatDateTimeFull).format(formatDate);
+			}
 		},
 		{
 			title: "Status",
 			dataIndex: "is-deleted",
 			align: "center",
-			width: "8%",
+			width: "5%",
 			fixed: "right",
 			render: (text, record) => (
 				<div style={{ display: "flex", justifyContent: "space-around" }}>
@@ -121,6 +119,24 @@ const AccountList = () => {
 					/>
 				</div>
 			)
+		},
+		{
+			title: "Action",
+			align: "center",
+			width: "8%",
+			fixed: "right",
+			render: (text, record) => (
+				<div style={{ display: "flex", justifyContent: "space-around" }}>
+					<Button
+						type="link"
+						size="small"
+						icon={<EditOutlined />}
+						onClick={() => {
+							navigate(`/club/edit-event/${record.id}`);
+						}}
+					/>
+				</div>
+			)
 		}
 	];
 
@@ -129,7 +145,7 @@ const AccountList = () => {
 			key="btn-complete"
 			type="primary"
 			onClick={() => {
-				navigate("/admin/create-account");
+				navigate("/club/create-post");
 			}}
 		>
 			{"Create"}
@@ -143,8 +159,8 @@ const AccountList = () => {
 			breadcrumbName: "Home"
 		},
 		{
-			path: "/dashboard",
-			breadcrumbName: "University"
+			path: "/dashboard/club",
+			breadcrumbName: "Club"
 		}
 	];
 
@@ -152,7 +168,7 @@ const AccountList = () => {
 		<Layout className="layoutContent">
 			<PageHeader
 				ghost={false}
-				title="Account"
+				title="Post"
 				extra={extraButton}
 				breadcrumb={routes}
 				className="customPageHeader"
@@ -200,29 +216,6 @@ const AccountList = () => {
 						</Col>
 						<Col span={6}>
 							<Row span={12}>
-								<Form.Item label="Role" name="role">
-									<Select
-										defaultValue=""
-										style={{ width: 180 }}
-										onChange={(e) => {
-											setRole(e);
-										}}
-									>
-										<Select.Option value="">All</Select.Option>
-										<Select.Option value="SystemAdministrator">
-											System Administrator
-										</Select.Option>
-										<Select.Option value="SchoolAdmin">
-											School Admin
-										</Select.Option>
-										<Select.Option value="ClubAdmin">Club Admin</Select.Option>
-										<Select.Option value="Student">Student</Select.Option>
-									</Select>
-								</Form.Item>
-							</Row>
-						</Col>
-						<Col span={6}>
-							<Row span={12}>
 								<Form.Item label="Status" name="status">
 									<Select
 										defaultValue=""
@@ -243,7 +236,7 @@ const AccountList = () => {
 					title={() => (
 						<Row>
 							<Col span={12}>
-								<h3> {"Account List"}</h3>
+								<h3> {"Post List"}</h3>
 							</Col>
 						</Row>
 					)}
@@ -251,7 +244,7 @@ const AccountList = () => {
 					loading={loading}
 					bordered
 					columns={columns}
-					dataSource={uniList}
+					dataSource={eventList}
 					onChange={(pagination, filters, sorter) => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 						if (pagination.pageSize !== params["page-size"]) {
@@ -280,7 +273,7 @@ const AccountList = () => {
 				okText="Deactive"
 				cancelText="Cancel"
 			>
-				<p>Do you want to deactive this user?</p>
+				<p>Do you want to deactive this post?</p>
 			</Modal>
 			// Active modal
 			<Modal
@@ -291,10 +284,10 @@ const AccountList = () => {
 				okText="Active"
 				cancelText="Cancel"
 			>
-				<p>Do you want to active this user?</p>
+				<p>Do you want to active this post?</p>
 			</Modal>
 		</Layout>
 	);
 };
 
-export default AccountList;
+export default PostList;

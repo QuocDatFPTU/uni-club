@@ -76,7 +76,7 @@ const UniAccountEdit = () => {
 					>
 						<Row>
 							<Col offset={4} span={5}>
-								<Form.Item name="UploadedLogo" label="University Image">
+								<Form.Item name="UploadedLogo" label="Account Image">
 									<Upload
 										accept="image/*"
 										maxCount={1}
