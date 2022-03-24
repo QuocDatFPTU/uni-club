@@ -133,8 +133,12 @@ const ClubAccountCreate = () => {
 									]}
 								>
 									<Select>
-										{clubList.map((uni) => {
-											return <Option value={uni.id}>{uni["club-name"]}</Option>;
+										{clubList.map((club) => {
+											return (
+												<Option value={club.id}>
+													{club["club-name"]} ({club["short-name"]})
+												</Option>
+											);
 										})}
 									</Select>
 								</Form.Item>

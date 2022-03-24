@@ -30,3 +30,13 @@ export async function createUni(payload) {
 	}
 	return axiosFormCreate.post(url, formData);
 }
+
+export async function deactiveUni(payload) {
+	const url = `/universities/${payload}`;
+	return axiosClient.delete(url);
+}
+
+export async function activeUni(payload) {
+	const url = `/universities/${payload.id}/recover`;
+	return axiosClient.put(url, payload);
+}
