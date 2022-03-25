@@ -43,7 +43,7 @@ const UniCreate = () => {
 			<PageHeader
 				onBack={() => window.history.back()}
 				ghost={false}
-				title="Create Event"
+				title="Create University"
 				className="customPageHeader"
 			/>
 			<Content style={{ backgroundColor: "white" }}>

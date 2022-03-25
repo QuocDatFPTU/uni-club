@@ -49,10 +49,7 @@ const App = () => {
 					<Route path="" element={<Login />} />
 					<Route path="/login" element={<Login />} />
 				</Route>
-				<Route
-					path="admin"
-					element={<AdminLayout sider={<AdminSider />} title="Admin" />}
-				>
+				<Route path="admin" element={<AdminLayout sider={<AdminSider />} />}>
 					<Route path="" element={<Welcome />} />
 					<Route path="university" element={<UniList />} />
 					<Route path="edit-university/:id" element={<UniEdit />} />
@@ -64,12 +61,7 @@ const App = () => {
 				</Route>
 				<Route
 					path="dashboard"
-					element={
-						<DashboardLayout
-							sider={<DashboardSider />}
-							title="FPT University"
-						/>
-					}
+					element={<DashboardLayout sider={<DashboardSider />} />}
 				>
 					<Route path="" element={<Welcome />} />
 					<Route path="clubs" element={<ClubList />} />
@@ -77,12 +69,7 @@ const App = () => {
 					<Route path="student" element={<StudentList />} />
 					<Route path="create-account" element={<ClubAccountCreate />} />
 				</Route>
-				<Route
-					path="club"
-					element={
-						<DashboardLayout sider={<ClubSider />} title="FPT ABC CLUB" />
-					}
-				>
+				<Route path="club" element={<DashboardLayout sider={<ClubSider />} />}>
 					<Route path="" element={<Welcome />} />
 					<Route path="member" element={<MemberList />} />
 					<Route path="event" element={<EventList />} />

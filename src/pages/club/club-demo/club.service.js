@@ -1,5 +1,5 @@
 import axiosClient from "../../../util/axiosClient";
-
+import axiosForm from "../../../util/axiosFormCreate";
 export async function getListClub(params) {
 	const url = "/clubs";
 	return axiosClient.get(url, { params });
@@ -22,11 +22,12 @@ export async function updateClub(payload) {
 
 export async function createClub(payload) {
 	const url = `/clubs`;
-	const newClub = {
-		...payload,
-		"uni-id": 1
-	};
-	return axiosClient.post(url, newClub);
+	let formData = new FormData();
+	for (let [key, val] of Object.entries(payload)) {
+		// append each item to the formData (converted to JSON strings)
+		formData.append(key, val);
+	}
+	return axiosForm.post(url, formData);
 }
 
 export async function deactiveClub(payload) {

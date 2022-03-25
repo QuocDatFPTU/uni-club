@@ -64,7 +64,7 @@ const PostCreate = () => {
 						<Row>
 							<Col offset={4} span={8}>
 								<Form.Item
-									name="title"
+									name="Title"
 									label="Title"
 									rules={[
 										{
@@ -76,7 +76,7 @@ const PostCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="short-description"
+									name="ShortDescription"
 									label="Short description"
 									rules={[
 										{
@@ -88,7 +88,7 @@ const PostCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="content"
+									name="Content"
 									label="Content"
 									rules={[
 										{
@@ -100,7 +100,7 @@ const PostCreate = () => {
 									<TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
 								</Form.Item>
 								<Form.Item
-									name="status"
+									name="Status"
 									label="Status"
 									rules={[
 										{
@@ -117,7 +117,7 @@ const PostCreate = () => {
 									</Select>
 								</Form.Item>
 								<Form.Item
-									name="event-id"
+									name="EventId"
 									label="Event"
 									rules={[
 										{
@@ -136,7 +136,7 @@ const PostCreate = () => {
 										})}
 									</Select>
 								</Form.Item>
-								<Form.Item name="is-private">
+								<Form.Item>
 									<Button type="primary" htmlType="submit">
 										Create
 									</Button>

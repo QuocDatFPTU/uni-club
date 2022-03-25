@@ -57,7 +57,7 @@ const TaskCreate = () => {
 			<PageHeader
 				onBack={() => window.history.back()}
 				ghost={false}
-				title="Create Post"
+				title="Create Task"
 				className="customPageHeader"
 			/>
 			<Content style={{ backgroundColor: "white" }}>

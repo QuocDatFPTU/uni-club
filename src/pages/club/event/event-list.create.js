@@ -10,7 +10,8 @@ import {
 	Layout,
 	Button,
 	InputNumber,
-	Modal
+	Modal,
+	Select
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Content } from "antd/lib/layout/layout";
@@ -30,10 +31,10 @@ const success = () => {
 
 const EventCreate = () => {
 	const onFinish = async (values) => {
-		values["end-date"] =
-			moment(values["end-date"], formatDate).format(formatDateTimeFull) + "Z";
-		values["start-date"] =
-			moment(values["start-date"], formatDate).format(formatDateTimeFull) + "Z";
+		values["EndDate"] =
+			moment(values["EndDate"], formatDate).format(formatDateTimeFull) + "Z";
+		values["StartDate"] =
+			moment(values["StartDate"], formatDate).format(formatDateTimeFull) + "Z";
 		let res = await createEvent(values);
 		console.log(res);
 		if (res != null) {
@@ -52,16 +53,16 @@ const EventCreate = () => {
 				<div className="site-layout-content">
 					<Form
 						initialValues={{
-							"is-private": false,
-							"avatar-url": "",
-							status: "NotStarted"
+							IsPrivate: false,
+							ImageUrl: "",
+							Status: "NotStarted"
 						}}
 						onFinish={onFinish}
 						layout="vertical"
 					>
 						<Row>
 							<Col offset={4} span={5}>
-								<Form.Item name="avatar-url" label="Event Image">
+								<Form.Item name="ImageUrl" label="Event Image">
 									<Upload
 										accept="image/*"
 										maxCount={1}
@@ -74,7 +75,7 @@ const EventCreate = () => {
 							</Col>
 							<Col span={8}>
 								<Form.Item
-									name="event-name"
+									name="EventName"
 									label="Name"
 									rules={[
 										{
@@ -86,7 +87,7 @@ const EventCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="start-date"
+									name="StartDate"
 									label="Start Date"
 									rules={[
 										{
@@ -98,7 +99,7 @@ const EventCreate = () => {
 									<DatePicker />
 								</Form.Item>
 								<Form.Item
-									name="end-date"
+									name="EndDate"
 									label="End Date"
 									rules={[
 										{
@@ -110,7 +111,7 @@ const EventCreate = () => {
 									<DatePicker />
 								</Form.Item>
 								<Form.Item
-									name="location"
+									name="Location"
 									label="Location"
 									rules={[
 										{
@@ -122,7 +123,7 @@ const EventCreate = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="point"
+									name="Point"
 									label="Point"
 									rules={[
 										{
@@ -134,7 +135,7 @@ const EventCreate = () => {
 									<InputNumber />
 								</Form.Item>
 								<Form.Item
-									name="max-participants"
+									name="MaxParticipants"
 									label="Max participants"
 									rules={[
 										{
@@ -146,7 +147,7 @@ const EventCreate = () => {
 									<InputNumber />
 								</Form.Item>
 								<Form.Item
-									name="description"
+									name="Description"
 									label="Description"
 									rules={[
 										{
@@ -157,7 +158,18 @@ const EventCreate = () => {
 								>
 									<TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
 								</Form.Item>
-								<Form.Item name="is-private" label="Status">
+								<Form.Item name="Status" label="Status">
+									<Select defaultValue="NotStarted">
+										<Select.Option value="NotStarted">
+											Not Started
+										</Select.Option>
+										<Select.Option value="InProgress">
+											In Progress
+										</Select.Option>
+										<Select.Option value="Finished">Finished</Select.Option>
+									</Select>
+								</Form.Item>
+								<Form.Item name="IsPrivate" label="">
 									<Switch
 										checkedChildren="Public"
 										unCheckedChildren="Private"

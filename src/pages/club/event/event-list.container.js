@@ -76,6 +76,16 @@ const EventList = () => {
 
 	const columns = [
 		{
+			title: "Event image",
+			dataIndex: "image-url",
+			key: "image-url",
+			width: "14%",
+			ellipsis: true,
+			render: (url) => {
+				return <img width={100} height={100} src={url} />;
+			}
+		},
+		{
 			title: "Event name",
 			dataIndex: "event-name",
 			key: "event-name",
