@@ -10,7 +10,8 @@ import {
 	Layout,
 	Button,
 	InputNumber,
-	Spin
+	Spin,
+	Select
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Content } from "antd/lib/layout/layout";
@@ -34,10 +35,11 @@ const EventEdit = () => {
 	}, []);
 
 	const onFinish = async (values) => {
-		values["end-date"] =
-			moment(values["end-date"], formatDate).format(formatDateTimeFull) + "Z";
-		values["start-date"] =
-			moment(values["start-date"], formatDate).format(formatDateTimeFull) + "Z";
+		values.Id = id;
+		values["EndDate"] =
+			moment(values["EndDate"], formatDate).format(formatDateTimeFull) + "Z";
+		values["StartDate"] =
+			moment(values["StartDate"], formatDate).format(formatDateTimeFull) + "Z";
 		let res = await updateEvent(values, id);
 		console.log(res);
 		if (res != null) {
@@ -59,22 +61,23 @@ const EventEdit = () => {
 				<div className="site-layout-content">
 					<Form
 						initialValues={{
-							description: event.description,
-							"event-name": event["event-name"],
-							"is-private": event["is-private"],
-							location: event.location,
-							"max-participants": event["max-participants"],
-							point: event.point,
-							"image-url": event["image-url"],
-							"start-date": moment(event["start-date"]),
-							"end-date": moment(event["start-date"])
+							Description: event.description,
+							EventName: event["event-name"],
+							IsPrivate: event["is-private"],
+							Location: event.location,
+							MaxParticipants: event["max-participants"],
+							Point: event.point,
+							ImageUrl: event["image-url"],
+							StartDate: moment(event["start-date"]),
+							EndDate: moment(event["start-date"]),
+							Status: event.status
 						}}
 						onFinish={onFinish}
 						layout="vertical"
 					>
 						<Row>
 							<Col offset={4} span={5}>
-								<Form.Item name="avatar-url" label="Event Image">
+								<Form.Item name="ImageUrl" label="Event Image">
 									<Upload
 										accept="image/*"
 										maxCount={1}
@@ -87,7 +90,7 @@ const EventEdit = () => {
 							</Col>
 							<Col span={8}>
 								<Form.Item
-									name="event-name"
+									name="EventName"
 									label="Name"
 									rules={[
 										{
@@ -99,7 +102,7 @@ const EventEdit = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="start-date"
+									name="StartDate"
 									label="Start Date"
 									rules={[
 										{
@@ -111,7 +114,7 @@ const EventEdit = () => {
 									<DatePicker />
 								</Form.Item>
 								<Form.Item
-									name="end-date"
+									name="EndDate"
 									label="End Date"
 									rules={[
 										{
@@ -123,7 +126,7 @@ const EventEdit = () => {
 									<DatePicker />
 								</Form.Item>
 								<Form.Item
-									name="location"
+									name="Location"
 									label="Location"
 									rules={[
 										{
@@ -135,7 +138,7 @@ const EventEdit = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="point"
+									name="Point"
 									label="Point"
 									rules={[
 										{
@@ -147,7 +150,7 @@ const EventEdit = () => {
 									<InputNumber />
 								</Form.Item>
 								<Form.Item
-									name="max-participants"
+									name="MaxParticipants"
 									label="Max participants"
 									rules={[
 										{
@@ -159,7 +162,7 @@ const EventEdit = () => {
 									<InputNumber />
 								</Form.Item>
 								<Form.Item
-									name="description"
+									name="Description"
 									label="Description"
 									rules={[
 										{
@@ -170,13 +173,24 @@ const EventEdit = () => {
 								>
 									<TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
 								</Form.Item>
-								<Form.Item name="is-private" label="Status">
+								<Form.Item name="Status" label="Status">
+									<Select defaultValue="NotStarted">
+										<Select.Option value="NotStarted">
+											Not Started
+										</Select.Option>
+										<Select.Option value="InProgress">
+											In Progress
+										</Select.Option>
+										<Select.Option value="Finished">Finished</Select.Option>
+									</Select>
+								</Form.Item>
+								<Form.Item name="IsPrivate" label="">
 									<Switch
 										checkedChildren="Public"
 										unCheckedChildren="Private"
 									/>
 								</Form.Item>
-								<Form.Item name="is-private">
+								<Form.Item name="">
 									<Button type="primary" htmlType="submit">
 										Edit
 									</Button>

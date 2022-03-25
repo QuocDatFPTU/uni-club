@@ -1,4 +1,5 @@
 import axiosClient from "../../../util/axiosClient";
+import axiosForm from "../../../util/axiosFormCreate";
 export const getEventList = async (params) => {
 	const url = "/events";
 	return axiosClient.get(url, { params });
@@ -11,19 +12,22 @@ export async function getEventByID(id) {
 
 export async function createEvent(payload) {
 	const url = `/events`;
-	const newEvent = {
-		...payload
-	};
-	return axiosClient.post(url, newEvent);
+	let formData = new FormData();
+	for (let [key, val] of Object.entries(payload)) {
+		// append each item to the formData (converted to JSON strings)
+		formData.append(key, val);
+	}
+	return axiosForm.post(url, formData);
 }
 
 export async function updateEvent(payload, id) {
 	const url = `/events/${id}`;
-	const newEvent = {
-		...payload,
-		id: id
-	};
-	return axiosClient.put(url, newEvent);
+	let formData = new FormData();
+	for (let [key, val] of Object.entries(payload)) {
+		// append each item to the formData (converted to JSON strings)
+		formData.append(key, val);
+	}
+	return axiosForm.put(url, formData);
 }
 
 export async function deactiveEvent(payload) {

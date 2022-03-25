@@ -1,4 +1,5 @@
 import axiosClient from "../../../util/axiosClient";
+import axiosForm from "../../../util/axiosFormCreate";
 export const getPostList = async (params) => {
 	const url = "/posts";
 	return axiosClient.get(url, { params });
@@ -11,18 +12,22 @@ export async function getPostByID(id) {
 
 export async function createPost(payload) {
 	const url = `/posts`;
-	const newEvent = {
-		...payload
-	};
-	return axiosClient.post(url, newEvent);
+	let formData = new FormData();
+	for (let [key, val] of Object.entries(payload)) {
+		// append each item to the formData (converted to JSON strings)
+		formData.append(key, val);
+	}
+	return axiosForm.post(url, formData);
 }
 
 export async function updatePost(payload, id) {
 	const url = `/posts/${id}`;
-	const newEvent = {
-		...payload
-	};
-	return axiosClient.put(url, newEvent);
+	let formData = new FormData();
+	for (let [key, val] of Object.entries(payload)) {
+		// append each item to the formData (converted to JSON strings)
+		formData.append(key, val);
+	}
+	return axiosForm.put(url, formData);
 }
 
 export async function deactivePost(payload) {

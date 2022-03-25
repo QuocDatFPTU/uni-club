@@ -53,6 +53,7 @@ const PostEdit = () => {
 	}, []);
 
 	const onFinish = async (values) => {
+		values.id = id;
 		let res = await updatePost(values, id);
 		if (res != null) {
 			success();
@@ -65,20 +66,26 @@ const PostEdit = () => {
 			<PageHeader
 				onBack={() => window.history.back()}
 				ghost={false}
-				title="Create Post"
+				title="Edit Task"
 				className="customPageHeader"
 			/>
 			<Content style={{ backgroundColor: "white" }}>
 				<div className="site-layout-content">
 					<Form
-						initialValues={{ ...post }}
+						initialValues={{
+							Title: post.title,
+							ShortDescription: post["short-description"],
+							Content: post.content,
+							Status: post.status,
+							EventId: post["event-id"]
+						}}
 						onFinish={onFinish}
 						layout="vertical"
 					>
 						<Row>
 							<Col offset={4} span={8}>
 								<Form.Item
-									name="title"
+									name="Title"
 									label="Title"
 									rules={[
 										{
@@ -90,7 +97,7 @@ const PostEdit = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="short-description"
+									name="ShortDescription"
 									label="Short description"
 									rules={[
 										{
@@ -102,7 +109,7 @@ const PostEdit = () => {
 									<Input />
 								</Form.Item>
 								<Form.Item
-									name="content"
+									name="Content"
 									label="Content"
 									rules={[
 										{
@@ -114,7 +121,7 @@ const PostEdit = () => {
 									<TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
 								</Form.Item>
 								<Form.Item
-									name="status"
+									name="Status"
 									label="Status"
 									rules={[
 										{
@@ -131,7 +138,7 @@ const PostEdit = () => {
 									</Select>
 								</Form.Item>
 								<Form.Item
-									name="event-id"
+									name="EventId"
 									label="Event"
 									rules={[
 										{
