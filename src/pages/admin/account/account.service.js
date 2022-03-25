@@ -22,7 +22,7 @@ export async function updateAccount(payload) {
 }
 
 export async function createSchoolAdmin(payload) {
-	const url = `/users/SchoolAdmin`;
+	const url = `/users/school-admin`;
 	let formData = new FormData();
 	for (let [key, val] of Object.entries(payload)) {
 		// append each item to the formData (converted to JSON strings)

@@ -67,7 +67,7 @@ const UniEdit = () => {
 			<PageHeader
 				onBack={() => window.history.back()}
 				ghost={false}
-				title="Edit Event"
+				title="Edit University"
 				className="customPageHeader"
 			/>
 			<Content style={{ backgroundColor: "white" }}>
