@@ -17,7 +17,11 @@ import TextArea from "antd/lib/input/TextArea";
 import { Content } from "antd/lib/layout/layout";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { formatDate, formatDateTimeFull } from "../../../util/constant";
+import {
+	formatDate,
+	formatDateTimeFull,
+	formatDateYearFirst
+} from "../../../util/constant";
 import { getEventList } from "../event/event.service";
 import { createTask } from "./task.service";
 
@@ -43,10 +47,12 @@ const TaskCreate = () => {
 	}, []);
 
 	const onFinish = async (values) => {
-		values["end-date"] =
-			moment(values["end-date"], formatDate).format(formatDateTimeFull) + "Z";
-		values["start-date"] =
-			moment(values["start-date"], formatDate).format(formatDateTimeFull) + "Z";
+		values["end-date"] = moment(values["end-date"], formatDate).format(
+			formatDateYearFirst
+		);
+		values["start-date"] = moment(values["start-date"], formatDate).format(
+			formatDateYearFirst
+		);
 		let res = await createTask(values);
 		if (res != null) {
 			success();

@@ -60,7 +60,7 @@ const UniAccountEdit = () => {
 			<PageHeader
 				onBack={() => window.history.back()}
 				ghost={false}
-				title="Create Event"
+				title="Edit Acount"
 				className="customPageHeader"
 			/>
 			<Content style={{ backgroundColor: "white" }}>

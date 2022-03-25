@@ -56,7 +56,7 @@ const UniAccountCreate = () => {
 			<PageHeader
 				onBack={() => window.history.back()}
 				ghost={false}
-				title="Create Event"
+				title="Create Account"
 				className="customPageHeader"
 			/>
 			<Content style={{ backgroundColor: "white" }}>
